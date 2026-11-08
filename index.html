@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#1b1236">
+<title>Party Familiar</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#1b1236;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{background:#2a1d5c;background:radial-gradient(circle at 20% 0%,#3b2a7a,#1b1236 55%) fixed;overflow-x:hidden}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+input{font:inherit}
+#app{max-width:560px;margin:0 auto;padding:10px 10px 40px}
+#app.g{padding-bottom:150px}
+h1{margin:4px 0;font-size:34px}h3{margin:12px 0 4px;font-size:16px}
+.hero{text-align:center;padding:24px 0 8px}.logo{font-size:72px}
+.foot{text-align:center;opacity:.6;font-size:13px}
+.card{background:rgba(255,255,255,.08);border-radius:18px;padding:12px 14px;margin:10px 0}
+.btn{display:block;width:100%;padding:14px 16px;border-radius:16px;background:#ffd23f;color:#2b1a00;font-weight:800;font-size:18px;box-shadow:0 4px 0 #b88f00;margin:10px 0}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b88f00}
+.btn.sec{background:#4b3a8f;color:#fff;box-shadow:0 4px 0 #2d2260}
+.btn.bad{background:#ef4444;color:#fff;box-shadow:0 4px 0 #9b1c1c}
+.btn.ok{background:#22c55e;color:#04210d;box-shadow:0 4px 0 #15803d}
+.btn.sm{display:inline-block;width:auto;padding:8px 12px;font-size:15px;margin:3px}
+.btn[disabled]{opacity:.5}
+.chip{display:inline-block;padding:9px 12px;border-radius:999px;background:#3a2c75;margin:4px 3px;font-weight:700;font-size:15px}
+.chip.on{background:#ffd23f;color:#2b1a00}
+.chip[disabled]{opacity:.5}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:6px}
+.ib{background:#3a2c75;border-radius:12px;padding:8px 12px;font-size:20px;margin-left:6px}
+.prow{display:flex;gap:6px;margin:6px 0;align-items:center}
+.prow input,.jin{flex:1;min-width:0;padding:11px;border-radius:12px;border:0;background:#fff;color:#222;font-size:17px}
+.em{font-size:26px;background:#3a2c75;border-radius:12px;padding:4px 10px}
+#score{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px}
+.pc{flex:0 0 auto;background:rgba(255,255,255,.1);border-radius:12px;padding:6px 10px;font-size:13px;min-width:112px}
+.pc.cur{outline:2px solid #ffd23f;background:rgba(255,210,63,.18)}
+.pn{font-weight:800;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.tr span{opacity:.22;font-size:15px}.tr span.on{opacity:1}
+#bsvg{display:block;width:100%;height:auto;max-height:calc(100vh - 235px);max-height:calc(100dvh - 235px);margin:0 auto;background:rgba(255,255,255,.04);border-radius:18px}
+#bsvg .edges line{stroke:rgba(255,255,255,.28);stroke-width:12;stroke-linecap:round}
+#bsvg text{pointer-events:none;user-select:none;-webkit-user-select:none}
+.bob{animation:bob .7s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hl{cursor:pointer;animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+#dock{position:fixed;left:0;right:0;bottom:0;background:#150d2b;border-top:1px solid rgba(255,255,255,.15);padding:8px 10px calc(8px + env(safe-area-inset-bottom));z-index:20}
+.dk{max-width:560px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.dm{flex:1;min-width:0}.who{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:12px;opacity:.75}.msg{font-size:13px;min-height:32px;margin-top:2px}
+.db{display:flex;flex-direction:column;align-items:stretch}
+.db .btn{margin:2px 0;padding:10px 12px;font-size:16px;white-space:nowrap}
+.db .btn.sm{font-size:13px;padding:6px 8px}
+.dice{display:flex;gap:6px;justify-content:center}
+.die{width:56px;height:56px;background:#fff;border-radius:12px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:7px;box-shadow:0 3px 0 #bbb;gap:2px}
+.die span{border-radius:50%}.die span.on{background:#222}
+.die.num{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#222}
+.dice.big .die{width:76px;height:76px;padding:9px}
+.shake .die{animation:shake .12s infinite}
+@keyframes shake{0%{transform:rotate(-12deg)}50%{transform:rotate(10deg) translateY(-6px)}100%{transform:rotate(-12deg)}}
+#modal,#sheet{position:fixed;inset:0;background:rgba(10,5,30,.85);display:none;align-items:flex-end;justify-content:center}
+#sheet{z-index:40}#modal{z-index:60}
+#modal.on,#sheet.on{display:flex}
+.sheet{width:100%;max-width:560px;max-height:96vh;overflow:auto;background:#241947;border-radius:24px 24px 0 0;padding-bottom:calc(14px + env(safe-area-inset-bottom));animation:up .2s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.sh-h{padding:14px 16px;font-weight:900;font-size:18px;border-radius:24px 24px 0 0;display:flex;gap:8px;align-items:center}
+.sh-b{padding:10px 16px}
+.qt{font-size:22px;font-weight:800;margin:10px 0 14px}
+.opt{display:block;width:100%;text-align:left;padding:14px;border-radius:14px;background:#3a2c75;margin:8px 0;font-size:18px;font-weight:700}
+.opt[disabled]{opacity:.9}
+.opt.right{background:#16a34a}.opt.wrong{background:#dc2626}
+.fbk{font-size:20px;font-weight:800;margin:10px 0}
+.tn{font-size:72px;font-weight:900;text-align:center;line-height:1;transition:color .2s}.tn.low{color:#ef4444;animation:pul .5s infinite alternate}@keyframes pul{from{transform:scale(1)}to{transform:scale(1.18)}}
+.bar{height:10px;border-radius:9px;background:#3a2c75;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:#ffd23f;width:100%}.bar i.low{background:#ef4444}
+.word{font-size:34px;font-weight:900;text-align:center;margin:14px 0;word-break:break-word}
+.word.s{font-size:26px;margin:8px 0}
+.forb{text-align:center;color:#fca5a5;font-weight:800;font-size:20px;line-height:1.5}
+.peek{display:block;width:100%;padding:14px;border-radius:14px;background:#334155;margin:8px 0;font-size:20px;font-weight:800;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}
+#cv{width:100%;background:#fff;border-radius:14px;touch-action:none;display:block;margin:8px 0}
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.sw{width:30px;height:30px;border-radius:50%;border:3px solid transparent}.sw.on{border-color:#ffd23f}
+.set{display:flex;justify-content:space-between;align-items:center;margin:8px 0;flex-wrap:wrap;gap:6px}
+.row{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0;font-size:18px}
+.dsum{text-align:center;font-size:24px;font-weight:900;min-height:32px;margin:8px 0}
+textarea{width:100%;height:110px;border-radius:12px;border:0;padding:8px;font-size:12px;background:#fff;color:#222}
+.cardx{text-align:center;padding:10px 0}.cardx .e{font-size:76px}.cardx h2{margin:4px 0}
+#toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#000c;padding:10px 16px;border-radius:14px;z-index:99;display:none;max-width:90%;text-align:center}
+.cf{position:fixed;top:-40px;font-size:28px;z-index:80;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.leg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.leg span{padding:4px 9px;border-radius:999px;font-size:13px;font-weight:700}
+.code{font-size:44px;font-weight:900;letter-spacing:6px;text-align:center;color:#ffd23f;margin:4px 0}
+.seat{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:4px 0}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;margin-right:4px}.dot.on{background:#22c55e}
+.mini{font-size:12px;opacity:.8}
+.gin{display:flex;gap:6px;margin:10px 0}.gin input{flex:1;min-width:0;padding:12px;border-radius:12px;border:0;font-size:18px;background:#fff;color:#222}
+.gin button{padding:0 16px;border-radius:12px;background:#ffd23f;color:#2b1a00;font-weight:800}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">Necesitas activar JavaScript para jugar.</p></noscript>
+<div id="app"></div>
+<div id="sheet"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+<script>
+'use strict';
+/* ===================== DATOS ===================== */
+const CATS={
+ q:{n:'Preguntas',i:'❓',c:'#2563eb'},
+ m:{n:'Mímica y sonidos',i:'🎭',c:'#16a34a'},
+ p:{n:'Palabras prohibidas',i:'🚫',c:'#f59e0b'},
+ l:{n:'Leer labios',i:'👄',c:'#db2777'},
+ d:{n:'Dibujo',i:'✏️',c:'#9333ea'},
+ start:{n:'Salida',i:'🏁',c:'#475569'},
+ free:{n:'Tirada libre',i:'🎲',c:'#e2e8f0'}};
+const ORDER=['q','m','p','l','d'];
+const THQ={dep:'⚽ Deportes',act:'📰 Actualidad, política y sucesos',cin:'🎬 Cine y series',mus:'🎵 Música',tv:'📺 TV y famosos',tec:'📱 Tecnología e internet',vid:'🎮 Videojuegos',esp:'🇪🇸 España y Cataluña',col:'🇨🇴 Colombia',mun:'🌍 Mundo y geografía',cul:'🔬 Cultura y ciencia',his:'🏛️ Historia',mat:'➗ Mates y números'};
+const THW={ani:'🐘 Animales',pro:'👩‍🚒 Profesiones',cin:'🎬 Películas y series',acc:'🏃 Acciones',dep:'🏅 Deportes',obj:'🔧 Objetos',lug:'🏰 Lugares',com:'🍔 Comida',per:'⭐ Personajes y famosos',fie:'🎉 Fiestas y tradiciones',nat:'🌋 Naturaleza',tec:'📱 Tecnología'};
+const EMOJIS=['🦊','🐼','🐸','🦁','🐙','🦄','🐯','🐵','🐧','🦖','🐰','🐨'];
+const COLORS=['#ef4444','#3b82f6','#16a34a','#f59e0b','#a855f7','#0d9488'];
+
+const QTXT=`dep|¿Qué jugador marcó el gol de la final del Mundial 2026, en la prórroga?|Ferran Torres|Ferran;Torres
+dep|¿En qué país se jugó la final del Mundial 2026?|Estados Unidos|EEUU;EE UU;USA;Nueva Jersey
+dep|¿Qué país norteamericano, junto a Estados Unidos y México, organizó el Mundial 2026?|Canadá|Canada
+dep|¿Qué joven defensa del Barça fue elegido mejor jugador joven del Mundial 2026?|Pau Cubarsí|Cubarsí;Cubarsi
+dep|¿Qué jugador marcó el gol decisivo de España en la final de la Eurocopa 2024 ante Inglaterra?|Mikel Oyarzabal|Oyarzabal
+dep|¿Qué selección ganó la Eurocopa de 2020, jugada en 2021?|Italia
+dep|¿Qué selección ganó la Copa América 2024 ante Colombia en la final?|Argentina
+dep|¿Qué selección perdió la final de la Copa América 2024 ante Argentina?|Colombia
+dep|¿Qué jugadora del Barça ganó el Balón de Oro femenino en 2023 y en 2024?|Aitana Bonmatí|Aitana;Bonmatí;Bonmati
+dep|¿Quién ganó el Balón de Oro masculino en 2025?|Ousmane Dembélé|Dembélé;Dembele
+dep|¿Quién ganó el Balón de Oro masculino en 2024?|Rodri|Rodrigo Hernández;Rodri Hernández
+dep|¿Quién ganó el Balón de Oro masculino en 2023?|Lionel Messi|Messi;Leo Messi
+dep|¿Quién ganó el Balón de Oro masculino en 2018?|Luka Modrić|Modrić;Modric
+dep|¿Qué equipo ganó la Champions League de 2021?|Chelsea
+dep|¿Qué equipo ganó la Champions League de 2019?|Liverpool
+dep|¿Qué equipo ganó la liga española 2023-24?|Real Madrid
+dep|¿Qué equipo sorprendió ganando la Premier League 2015-16, con Ranieri de entrenador?|Leicester City|Leicester
+dep|¿A qué club de Arabia Saudí se fue Cristiano Ronaldo en enero de 2023?|Al Nassr|Al-Nassr;Al Nasr
+dep|¿Qué centrocampista inglés fichó por el Real Madrid en 2023 desde el Borussia Dortmund?|Jude Bellingham|Bellingham
+dep|¿Qué entrenador italiano dejó el Real Madrid en 2025 para dirigir a la selección de Brasil?|Carlo Ancelotti|Ancelotti
+dep|¿Qué entrenador español dirige al PSG y ganó dos Champions seguidas con el club?|Luis Enrique|Luis Enrique Martínez
+dep|¿Qué equipo ganó la Champions League femenina de 2025, superando al Barça en la final?|Arsenal
+dep|¿Con qué escudería ganó Lando Norris el título de F1 de 2025?|McLaren
+dep|¿Qué piloto ganó el Mundial de F1 de 2016, el único de su carrera?|Nico Rosberg|Rosberg
+dep|¿A qué escudería se incorporó Lewis Hamilton en 2025?|Ferrari
+dep|¿Quién ganó Wimbledon en 2025?|Jannik Sinner|Sinner
+dep|¿Qué golfista español ganó el Masters de Augusta en 2023?|Jon Rahm|Rahm
+dep|¿En qué ciudad se celebraron los Juegos Olímpicos de 2024?|París|Paris
+dep|¿En qué ciudad serán los Juegos Olímpicos de 2028?|Los Ángeles|Los Angeles
+dep|¿Cuántas medallas de oro ganó España en los Juegos de París 2024?|5|cinco
+dep|¿Qué equipo ganó la NBA en 2024?|Boston Celtics|Celtics;Boston
+dep|¿Qué estrella de los Mavericks fue traspasada a los Lakers en 2025?|Luka Dončić|Doncic;Dončić;Luka Doncic;Luka
+dep|¿Qué rapero actuó en el descanso de la Super Bowl de 2025?|Kendrick Lamar|Kendrick
+dep|¿Qué youtuber derrotó a Mike Tyson en el combate de boxeo de 2024 emitido por Netflix?|Jake Paul
+act|¿Quién ganó las elecciones presidenciales de Estados Unidos en 2016?|Donald Trump|Trump
+act|¿Quién es el vicepresidente de Estados Unidos desde 2025?|JD Vance|Vance;J. D. Vance;J D Vance
+act|¿En qué año votó el Reino Unido salir de la Unión Europea?|2016
+act|¿Cómo se llama el político laborista que es primer ministro británico desde julio de 2024?|Keir Starmer|Starmer
+act|¿Qué primera ministra británica dimitió en octubre de 2022 tras solo unas semanas en el cargo?|Liz Truss|Truss
+act|¿Qué rey británico fue coronado en mayo de 2023?|Carlos III|Carlos 3;Charles III;Rey Carlos
+act|¿Cómo se llamó la salida de Harry y Meghan de la familia real británica?|Megxit
+act|¿En qué castillo se casaron Harry y Meghan en 2018?|Windsor
+act|¿Qué enfermedad provocó la pandemia mundial declarada en marzo de 2020?|COVID-19|Covid;Coronavirus;Covid 19
+act|¿Qué estado se declaró en España en marzo de 2020 por la pandemia?|Estado de alarma|Alarma
+act|¿En qué año invadió Rusia a gran escala Ucrania?|2022
+act|¿Cómo se llama el presidente de Ucrania desde 2019?|Volodímir Zelenski|Zelenski;Zelensky;Volodimir Zelenski
+act|¿Cómo se llama el papa elegido en mayo de 2025?|León XIV|Leon XIV;León 14;Leon 14
+act|¿De qué país es el papa León XIV?|Estados Unidos|EEUU;EE UU;USA
+act|¿Qué papa argentino falleció en abril de 2025?|Francisco|Papa Francisco
+act|¿Quién sucedió a Angela Merkel como canciller de Alemania en 2021?|Olaf Scholz|Scholz
+act|¿Qué político es canciller de Alemania desde mayo de 2025?|Friedrich Merz|Merz
+act|¿Cómo se llama la primera mujer primera ministra de Japón, desde octubre de 2025?|Sanae Takaichi|Takaichi
+act|¿Qué político sustituyó a Justin Trudeau como primer ministro de Canadá en 2025?|Mark Carney|Carney
+act|¿Quién ganó las elecciones presidenciales de Argentina en 2023?|Javier Milei|Milei
+act|¿Quién fue la primera mujer elegida presidenta de México, en 2024?|Claudia Sheinbaum|Sheinbaum
+act|¿A quién derrotó Lula da Silva en las elecciones brasileñas de 2022?|Jair Bolsonaro|Bolsonaro
+act|¿Quién ganó las elecciones presidenciales de Colombia en 2018?|Iván Duque|Duque;Ivan Duque
+act|¿Qué presidente sirio fue derrocado en diciembre de 2024?|Bashar al-Ásad|Bashar al Asad;Al Asad;Asad;Bachar el Asad;Bashar al-Asad
+act|¿Quién es secretario general de la ONU desde 2017?|António Guterres|Guterres;Antonio Guterres
+act|¿Qué catedral de París se incendió en abril de 2019?|Notre-Dame|Notre Dame
+act|¿Qué barco naufragado iba a visitar el sumergible Titán que implosionó en 2023?|Titanic|El Titanic
+act|¿Qué empresa farmacéutica produjo con BioNTech la primera vacuna aprobada contra la COVID-19?|Pfizer
+act|¿Quién es presidente del Gobierno de España desde junio de 2018?|Pedro Sánchez|Sánchez;Sanchez;Pedro Sanchez
+act|¿Quién es el rey de España desde 2014?|Felipe VI|Felipe 6;Felipe
+act|¿En qué ciudad ingresó la princesa Leonor en la Academia General Militar en 2023?|Zaragoza
+act|¿En qué año hubo un gran apagón eléctrico que dejó sin luz a España y Portugal?|2025
+act|¿Cómo se llamó la gran borrasca que nevó Madrid en enero de 2021?|Filomena
+act|¿Qué president de la Generalitat convocó el referéndum del 1 de octubre de 2017?|Carles Puigdemont|Puigdemont
+act|¿Qué president de la Generalitat precedió a Salvador Illa?|Pere Aragonès|Aragonès;Aragones;Pere Aragones
+act|¿Qué joven activista sueca inició las huelgas escolares por el clima en 2018?|Greta Thunberg|Thunberg
+act|¿En qué ciudad japonesa se celebró la Expo Universal de 2025?|Osaka
+tec|¿Cómo se llama el chatbot de OpenAI lanzado en noviembre de 2022?|ChatGPT|Chat GPT
+tec|¿Qué empresa creó ChatGPT?|OpenAI|Open AI
+tec|¿Cómo se llama el asistente de inteligencia artificial de Google?|Gemini|Bard
+tec|¿Cómo se llama el asistente de inteligencia artificial creado por Anthropic?|Claude
+tec|¿Qué modelo de IA chino sacudió los mercados tecnológicos en enero de 2025?|DeepSeek|Deep Seek
+tec|¿Qué nombre tiene desde 2023 la red social antes llamada Twitter?|X
+tec|¿Qué nombre adoptó Facebook Inc. como empresa en 2021?|Meta
+tec|¿Quién compró Twitter en 2022?|Elon Musk|Musk
+tec|¿Qué red social china de vídeos cortos arrasa entre los jóvenes?|TikTok|Tik Tok
+tec|¿Qué empresa es dueña de WhatsApp e Instagram?|Meta|Facebook
+tec|¿Qué iPhone, presentado en 2017, eliminó el botón de inicio?|iPhone X|iPhone 10
+tec|¿Cómo se llama el visor de realidad mixta que Apple lanzó en 2024?|Apple Vision Pro|Vision Pro
+tec|¿Cómo se llama la consola híbrida de Nintendo lanzada en 2017?|Nintendo Switch|Switch
+tec|¿Cómo se llama la sucesora de la Nintendo Switch lanzada en junio de 2025?|Nintendo Switch 2|Switch 2
+tec|¿Qué consola de Sony salió a la venta en noviembre de 2020?|PlayStation 5|PS5
+tec|¿Qué empresa de Elon Musk ofrece internet por satélite con Starlink?|SpaceX|Space X
+tec|¿Cómo se llama el telescopio espacial lanzado en diciembre de 2021 que sucede al Hubble?|James Webb|Telescopio James Webb
+tec|¿Cómo se llama el vehículo explorador de la NASA que aterrizó en Marte en 2021?|Perseverance
+tec|¿Qué versión de Windows se lanzó en 2021 tras Windows 10?|Windows 11
+tec|¿Qué juego de realidad aumentada con criaturas arrasó en el verano de 2016?|Pokémon GO|Pokemon Go
+tec|¿Qué videojuego Battle Royale de Epic Games arrasó desde 2017?|Fortnite
+tec|¿Qué juego de deducción social con «impostores» se hizo viral en 2020?|Among Us
+tec|¿Cómo se llama la camioneta eléctrica de ángulos rectos presentada por Tesla en 2019?|Cybertruck
+tec|¿Qué plataforma de vídeo propiedad de Google es la más usada del mundo?|YouTube
+tec|¿Qué red social de Meta, lanzada en 2023, nació como alternativa a Twitter?|Threads
+tec|¿Cómo se llama el sistema de pago de Apple en el móvil?|Apple Pay
+tec|¿Qué puerto de carga obligó la Unión Europea a usar en los móviles desde 2024?|USB-C|USB C
+tec|¿Qué streamer español organiza La Velada del Año?|Ibai Llanos|Ibai
+tec|¿Qué youtuber estadounidense es el más suscrito del mundo y creó Beast Games?|MrBeast|Mr Beast;Mister Beast
+vid|¿Cómo se llama el fontanero más famoso de Nintendo?|Mario
+vid|¿Cómo se llama el hermano de Mario?|Luigi
+vid|¿Cómo se llama el dinosaurio verde que acompaña a Mario?|Yoshi
+vid|¿Cómo se llama el villano con caparazón y espinas que secuestra a Peach?|Bowser
+vid|¿Cómo se llama el protagonista de La leyenda de Zelda?|Link
+vid|¿Cómo se llama el Pokémon amarillo y eléctrico, mascota de la franquicia?|Pikachu
+vid|¿Cómo se llama el erizo azul de Sega?|Sonic
+vid|¿Qué videojuego de bloques y mundos infinitos creó Mojang?|Minecraft
+vid|¿Cómo se llama el protagonista del God of War de 2018?|Kratos
+vid|¿Cómo se llama la heroína aventurera de Tomb Raider?|Lara Croft
+vid|¿Qué juego de FromSoftware, de 2022, creó junto a George R. R. Martin?|Elden Ring
+vid|¿Qué actor pone la voz original a Mario en la película de 2023?|Chris Pratt
+vid|¿Qué nombre sustituyó a FIFA en el videojuego de fútbol de EA desde 2023?|EA Sports FC|FC;EA FC
+vid|¿Cómo se llama la bola rosa de Nintendo que absorbe a sus enemigos?|Kirby
+vid|¿Qué juego de Nintendo de 2017 transcurre en un enorme Hyrule abierto?|Breath of the Wild|Zelda Breath of the Wild;La leyenda de Zelda Breath of the Wild
+cin|¿Qué director ganó el Oscar a mejor director en 2026 por Una batalla tras otra?|Paul Thomas Anderson|Anderson;PTA
+cin|¿Qué actriz ganó el Oscar a mejor actriz en 2026 por Hamnet?|Jessie Buckley|Buckley
+cin|¿Qué actor ganó el Oscar a mejor actor en 2026 por Los pecadores?|Michael B. Jordan|Jordan;Michael Jordan
+cin|¿Qué película de Netflix ganó el Oscar 2026 a mejor película de animación?|KPop Demon Hunters|Las guerreras K-Pop;K-Pop Demon Hunters;Kpop Demon Hunters
+cin|¿Qué película ganó el Oscar a mejor película en 2025?|Anora
+cin|¿Qué director ganó cuatro Oscars por Anora en 2025?|Sean Baker|Baker
+cin|¿Qué película ganó el Oscar a mejor película en 2024?|Oppenheimer
+cin|¿Qué actor ganó el Oscar a mejor actor por interpretar a Oppenheimer?|Cillian Murphy|Murphy
+cin|¿Qué director dirigió Oppenheimer?|Christopher Nolan|Nolan
+cin|¿Qué película ganó el Oscar a mejor película en 2023?|Todo a la vez en todas partes|Everything Everywhere All at Once
+cin|¿Qué película coreana ganó el Oscar a mejor película en 2020?|Parásitos|Parasitos;Parasite
+cin|¿Qué película ganó el Oscar a mejor película en 2017 tras el famoso error del sobre?|Moonlight
+cin|¿Qué director español ganó el León de Oro en Venecia 2024 con La habitación de al lado?|Pedro Almodóvar|Almodóvar;Almodovar
+cin|¿Qué película ganó el Goya a mejor película en 2024?|La sociedad de la nieve
+cin|¿Qué película ganó el Goya a mejor película en 2023?|As bestas
+cin|¿Qué película dirigida por Greta Gerwig fue la más taquillera de 2023?|Barbie
+cin|¿Qué película de Tom Cruise estrenada en 2022 es la secuela de un clásico de aviones de combate?|Top Gun: Maverick|Top Gun Maverick;Maverick
+cin|¿Qué actor protagoniza Dune como Paul Atreides?|Timothée Chalamet|Chalamet;Timothee Chalamet
+cin|¿Qué cantante interpreta a Glinda en Wicked (2024)?|Ariana Grande|Grande
+cin|¿Quién interpreta a Superman en la película de James Gunn de 2025?|David Corenswet|Corenswet
+cin|¿Cómo se llama el «Baby Yoda» de The Mandalorian?|Grogu
+cin|¿Qué serie española de Netflix protagonizan el Profesor y Berlín?|La casa de papel|Money Heist
+cin|¿Cuál es el primer juego de El juego del calamar?|Luz roja, luz verde|Un, dos, tres, pajarito inglés;Luz verde luz roja
+cin|¿Qué serie de Netflix narra la vida de la reina Isabel II?|The Crown|La corona
+cin|¿Qué actor chileno interpreta a Joel en la serie The Last of Us de HBO?|Pedro Pascal|Pascal
+cin|¿Qué serie de HBO de 2022 es una precuela de Juego de Tronos con dragones?|La casa del dragón|House of the Dragon
+cin|¿En qué país se ambienta la película Coco de Pixar?|México|Mexico
+cin|¿Qué película de Disney de 2024 es la secuela de Vaiana?|Vaiana 2|Moana 2
+cin|¿Qué película de 2021 reunió a tres Spider-Man distintos?|Spider-Man: No Way Home|No Way Home;Sin camino a casa
+cin|¿Qué serie de TV3 trata de un profesor de filosofía en un instituto catalán?|Merlí|Merli
+mus|¿Cómo se llama el álbum de Rosalía publicado el 7 de noviembre de 2025?|LUX|Lux
+mus|¿Con qué orquesta grabó Rosalía su álbum LUX?|London Symphony Orchestra|Orquesta Sinfónica de Londres;Orquesta Sinfonica de Londres;Sinfónica de Londres
+mus|¿Qué álbum de Rosalía de 2022 incluye Saoko y Despechá?|Motomami|Moto Mami
+mus|¿Qué álbum de Rosalía de 2018 se inspira en una novela medieval?|El mal querer
+mus|¿Qué álbum de Bad Bunny de 2025 incluye DtMF?|Debí tirar más fotos|Debi tirar mas fotos
+mus|¿Qué cantante colombiana lanzó en 2024 el álbum Las mujeres ya no lloran?|Shakira
+mus|¿Con qué productor argentino lanzó Shakira la sesión número 53 en 2023?|Bizarrap|Bizarrap Music Sessions
+mus|¿Qué cantante de Medellín publicó el álbum Mañana será bonito en 2023?|Karol G|Karol
+mus|¿Qué cantante paisa es conocido como Ferxxo?|Feid
+mus|¿Cuál es el nombre artístico de José Álvaro Osorio Balvín?|J Balvin|Balvin
+mus|¿Qué canción de Luis Fonsi y Daddy Yankee fue la más vista de YouTube durante años?|Despacito
+mus|¿Qué álbum de C. Tangana de 2021 incluye Tú me dejaste de querer?|El madrileño|El Madrileño
+mus|¿Qué cantante salió de Operación Triunfo 2017 y es conocida por Mon amour?|Aitana
+mus|¿Quién ganó Eurovisión 2026 con la canción Bangaranga?|Dara|Bulgaria
+mus|¿En qué ciudad se celebró Eurovisión 2026?|Viena
+mus|¿Qué cantante suizo ganó Eurovisión 2024 con The Code?|Nemo|Suiza
+mus|¿Qué cantante sueca ganó Eurovisión 2023 con Tattoo?|Loreen
+mus|¿Qué grupo italiano de rock ganó Eurovisión 2021?|Måneskin|Maneskin
+mus|¿Qué país ganó Eurovisión 2022 con Kalush Orchestra?|Ucrania
+mus|¿Qué cantante portugués ganó Eurovisión 2017?|Salvador Sobral|Sobral
+mus|¿Cómo se llama el álbum de Taylor Swift lanzado en octubre de 2025?|The Life of a Showgirl|Life of a Showgirl
+mus|¿Con qué jugador de la NFL se comprometió Taylor Swift en 2025?|Travis Kelce|Kelce
+mus|¿Cómo se llamó la gira más taquillera de Taylor Swift?|The Eras Tour|Eras Tour
+mus|¿Qué rapero publicó Not Like Us en su enfrentamiento con Drake?|Kendrick Lamar|Kendrick
+mus|¿Qué canción de Sabrina Carpenter fue el éxito del verano de 2024?|Espresso
+mus|¿Qué álbum de Charli XCX de 2024 dio nombre a un «verano» verde lima?|Brat
+mus|¿Qué cantante británica publicó el álbum 30 en 2021?|Adele
+mus|¿Qué canción de Ed Sheeran de 2017 se hizo número uno mundial?|Shape of You
+mus|¿Qué canción de KPop Demon Hunters ganó el Oscar a mejor canción original?|Golden
+mus|¿Qué banda de los hermanos Gallagher se reunió en 2025 tras 15 años separada?|Oasis
+mus|¿Qué artista fue el más escuchado de Spotify en 2022?|Bad Bunny
+tv|¿Quién presenta el programa El Hormiguero de Antena 3?|Pablo Motos|Motos
+tv|¿Quién presenta La Revuelta en TVE desde 2024?|David Broncano|Broncano
+tv|¿Qué presentador conduce Pasapalabra en Antena 3 desde 2020?|Roberto Leal|Leal
+tv|¿Qué cocinero con estrella Michelin es jurado de MasterChef junto a Pepe Rodríguez y Samantha Vallejo-Nágera?|Jordi Cruz|Cruz
+tv|¿Cómo se llama el concurso de cocina de TVE con Jordi Cruz, Pepe Rodríguez y Samantha?|MasterChef|Master Chef
+tv|¿Cómo se llama el programa de Telecinco que terminó en junio de 2023 tras 14 años?|Sálvame|Salvame
+tv|¿Qué presentador conduce Tu cara me suena en Antena 3?|Manel Fuentes|Manel
+tv|¿Qué cadena autonómica catalana emite el programa de humor Polònia?|TV3|TV 3;Televisió de Catalunya
+tv|¿Qué serie de dibujos catalana de TV3 popularizó en los 90 a Goku?|Bola de Drac|Bola de Dragón;Dragon Ball
+tv|¿Qué título lleva la princesa Leonor, heredera al trono de España?|Princesa de Asturias|Asturias
+tv|¿Qué futbolista es la persona con más seguidores en Instagram?|Cristiano Ronaldo|Ronaldo;Cristiano
+tv|¿Qué cantante y empresaria fundó la marca de belleza Fenty Beauty?|Rihanna
+tv|¿Qué actriz colombiana interpreta a Gloria en Modern Family?|Sofía Vergara|Vergara;Sofia Vergara
+esp|¿Cuál es la capital de Cataluña?|Barcelona
+esp|¿Qué arquitecto diseñó la Sagrada Familia?|Antoni Gaudí|Gaudí;Gaudi
+esp|¿Qué comarca tiene como capital a Igualada?|Anoia|L'Anoia
+esp|¿Qué montaña catalana alberga un monasterio benedictino y a la Moreneta?|Montserrat
+esp|¿Qué día se celebra la Diada Nacional de Catalunya?|11 de septiembre|11 septiembre;11 de setembre
+esp|¿Qué se regala en Sant Jordi junto con un libro?|Una rosa|Rosa;Rosas
+esp|¿Qué dulce típico se come en Cataluña el día de Todos los Santos?|Panellets|Panelets
+esp|¿Cómo se llama el postre catalán de crema con azúcar quemado por encima?|Crema catalana|Crema Catalana
+esp|¿Cómo se llama el pan con tomate catalán?|Pa amb tomàquet|Pan con tomate;Pa amb tomaquet
+esp|¿Cuál es el pico más alto de Cataluña?|Pica d'Estats|Pica destats;Pica d Estats
+esp|¿Cuál es la montaña más alta de España?|El Teide|Teide
+esp|¿Cuál es el río más largo de España?|Tajo
+esp|¿Qué río cruza la ciudad de Zaragoza?|Ebro
+esp|¿Cuál es la comunidad autónoma más extensa de España?|Castilla y León
+esp|¿Cuántas comunidades autónomas tiene España?|17|diecisiete
+esp|¿Cuál es la isla más grande de las Canarias?|Tenerife
+esp|¿Cuál es la capital de Galicia?|Santiago de Compostela
+esp|¿Cuál es la capital de Andalucía?|Sevilla
+esp|¿Qué pueblo valenciano celebra La Tomatina?|Buñol|Bunyol
+esp|¿Qué ciudad celebra los Sanfermines?|Pamplona
+esp|¿Qué ciudad celebra las Fallas?|Valencia
+esp|¿En qué museo de Madrid se exponen Las Meninas?|Museo del Prado|Prado
+esp|¿En qué ciudad nació Salvador Dalí?|Figueres
+esp|¿Qué siglas tiene la empresa ferroviaria pública catalana que une Barcelona con Igualada?|FGC|Ferrocarrils de la Generalitat;Ferrocarrils de la Generalitat de Catalunya
+esp|¿En qué estadio juega como local el FC Barcelona desde su reforma?|Camp Nou|Spotify Camp Nou
+esp|¿En qué estadio juega como local el Real Madrid?|Santiago Bernabéu|Bernabéu;Bernabeu
+esp|¿Cómo se llama el parque de Gaudí en Barcelona con un famoso lagarto de colores?|Park Güell|Parque Güell;Parc Güell;Park Guell;Güell
+esp|¿Qué isla balear es la más grande?|Mallorca
+esp|¿Cuál es la capital de Cantabria?|Santander
+esp|¿Cómo se llama la gran fiesta de Pamplona en la que se corre delante de los toros?|San Fermín|Sanfermines;San Fermin
+esp|¿Qué ciudad española es famosa por la Alhambra?|Granada
+esp|¿Cómo se llama el moderno museo de Bilbao diseñado por Frank Gehry?|Museo Guggenheim|Guggenheim
+esp|¿Qué ciudad española es famosa por su acueducto romano?|Segovia
+col|¿Cuál es la capital de Colombia?|Bogotá|Bogota
+col|¿Qué ciudad colombiana es conocida como «la ciudad de la eterna primavera»?|Medellín|Medellin
+col|¿De qué departamento colombiano es capital Bucaramanga?|Santander
+col|¿Qué ciudad colombiana es famosa por su centro amurallado y por ser «la heroica»?|Cartagena|Cartagena de Indias
+col|¿En qué ciudad colombiana se celebra el famoso carnaval?|Barranquilla
+col|¿Qué sopa típica de Bogotá lleva pollo, tres tipos de papa y guascas?|Ajiaco
+col|¿Cómo se llama el plato típico paisa con frijoles, chicharrón y arroz?|Bandeja paisa
+col|¿Qué masa de maíz plana y redonda es un desayuno típico colombiano?|Arepa
+col|¿Cuál es la moneda de Colombia?|Peso|Peso colombiano
+col|¿Qué río colombiano desemboca en Barranquilla?|Magdalena|Río Magdalena
+col|¿Qué bebida de granos tostados es el producto más famoso de Colombia?|Café|El café
+col|¿Qué colombiano ganó el Tour de Francia en 2019?|Egan Bernal|Bernal
+col|¿A qué club alemán se fue Luis Díaz en 2025 desde el Liverpool?|Bayern de Múnich|Bayern;Bayern Munich;Bayern Múnich
+col|¿Qué futbolista colombiano fue Bota de Oro en el Mundial de 2014?|James Rodríguez|James;James Rodriguez
+col|¿Cuál es el nombre real del cantante Maluma?|Juan Luis Londoño|Londoño;Juan Luis
+col|¿Qué festival colombiano de Medellín llena la ciudad de silleteros y flores?|Feria de las Flores|La Feria de las Flores
+col|¿Qué escritor colombiano ganó el Nobel de Literatura en 1982?|Gabriel García Márquez|García Márquez;Garcia Marquez;Gabo
+mun|¿Cuál es la capital de Australia?|Canberra
+mun|¿Cuál es la capital de Canadá?|Ottawa
+mun|¿Cuál es la capital de Brasil?|Brasilia|Brasília
+mun|¿Cuál es la capital de Turquía?|Ankara
+mun|¿Cuál es la capital de Marruecos?|Rabat
+mun|¿Cuál es la capital de Suiza?|Berna|Bern
+mun|¿Cuál es la capital de Portugal?|Lisboa
+mun|¿Cuál es la capital de Perú?|Lima
+mun|¿Cuál es la capital de Egipto?|El Cairo|Cairo
+mun|¿Cuál es la capital de Japón?|Tokio|Tokyo
+mun|¿Cuál es la capital de Argentina?|Buenos Aires
+mun|¿Cuál es la capital de Ucrania?|Kiev|Kyiv
+mun|¿En qué país se encuentra Machu Picchu?|Perú|Peru
+mun|¿En qué país está la ciudad de Venecia?|Italia
+mun|¿Qué país superó a China en 2023 como el más poblado del mundo?|India
+mun|¿Cuál es el país más grande del mundo por superficie?|Rusia
+mun|¿Cuál es el país más pequeño del mundo?|Ciudad del Vaticano|Vaticano
+mun|¿Cuál es la isla más grande del mundo?|Groenlandia
+mun|¿Cuál es la montaña más alta del mundo?|Everest|Monte Everest
+mun|¿Cuál es el océano más grande del mundo?|Pacífico|Océano Pacífico;Pacifico
+mun|¿Cuál es el país independiente más joven del mundo, desde 2011?|Sudán del Sur|Sudan del Sur
+mun|¿En qué país se celebró el Oktoberfest, la gran fiesta de la cerveza?|Alemania
+mun|¿En qué país se disputaron los Juegos de Invierno de 2022?|China
+mun|¿Qué país africano será sede del Mundial 2030 junto a España y Portugal?|Marruecos
+mun|¿Qué país será la sede del Mundial de fútbol de 2034?|Arabia Saudí|Arabia Saudita
+mun|¿Cómo se llama el desierto más grande de África?|Sáhara|Sahara;El Sáhara
+mun|¿Cómo se llama el río más caudaloso del mundo, que cruza Brasil?|Amazonas|Río Amazonas
+mun|¿Qué país tiene forma de bota?|Italia
+mun|¿Qué ciudad es famosa por su Coliseo?|Roma
+mun|¿En qué ciudad está la Estatua de la Libertad?|Nueva York|New York
+mun|¿Qué torre de París se inauguró en 1889?|Torre Eiffel|Eiffel
+cul|¿Cuál es el planeta más grande del sistema solar?|Júpiter|Jupiter
+cul|¿Qué planeta se conoce como el planeta rojo?|Marte
+cul|¿Cuál es el hueso más largo del cuerpo humano?|Fémur|El fémur;Femur
+cul|¿Cuántos huesos tiene el cuerpo de un adulto?|206
+cul|¿Qué símbolo químico tiene el oro?|Au
+cul|¿Cuál es el animal terrestre más rápido?|Guepardo|El guepardo;Chita
+cul|¿Qué pintor hizo La noche estrellada?|Vincent van Gogh|Van Gogh;Vangogh
+cul|¿Qué pintor español hizo el Guernica?|Pablo Picasso|Picasso
+cul|¿Quién pintó La Mona Lisa?|Leonardo da Vinci|Da Vinci;Leonardo;Leonardo Da Vinci
+cul|¿Quién escribió Don Quijote de la Mancha?|Miguel de Cervantes|Cervantes
+cul|¿Quién escribió La sombra del viento?|Carlos Ruiz Zafón|Ruiz Zafón;Zafón;Ruiz Zafon
+cul|¿Qué día se celebra el Día Internacional de la Mujer?|8 de marzo|8 marzo
+cul|¿Cuántas teclas tiene un piano estándar?|88
+cul|¿Qué número romano representa el 50?|L
+cul|¿Cuántos lados tiene un hexágono?|6|seis
+act|¿A quién derrotó Emmanuel Macron en la segunda vuelta de las elecciones presidenciales francesas de 2017?|Marine Le Pen|Le Pen
+act|¿Qué primer ministro británico completó la salida del Reino Unido de la UE en enero de 2020?|Boris Johnson|Johnson
+act|¿Quién fue canciller de Alemania durante 16 años, hasta 2021?|Angela Merkel|Merkel
+act|¿Qué edificio de Washington fue asaltado por seguidores de Trump en enero de 2021?|El Capitolio|Capitolio
+act|¿Cómo se llamó la variante del coronavirus detectada en Sudáfrica a finales de 2021?|Ómicron|Omicron
+act|¿Qué se hacía en España cada tarde a las 8 durante el confinamiento de 2020?|Aplaudir a los sanitarios|Aplausos;Aplaudir;Aplaudir desde los balcones
+act|¿Quién fue ministro de Sanidad de España durante la pandemia de 2020?|Salvador Illa|Illa
+act|¿Qué partido de Santiago Abascal entró con fuerza en el Congreso en 2019?|Vox|VOX
+act|¿Qué partido político fundó Pablo Iglesias en 2014?|Podemos
+act|¿En qué año se repitieron las elecciones generales en España, en abril y en noviembre?|2019
+act|¿Qué número de artículo de la Constitución se aplicó en Cataluña en octubre de 2017?|155|el 155;artículo 155
+act|¿En qué ciudad española se celebró la cumbre del clima COP25 en 2019?|Madrid
+act|¿En qué año se firmó el acuerdo de paz entre el Gobierno colombiano y las FARC?|2016
+act|¿Quién fue presidente de Argentina entre 2019 y 2023?|Alberto Fernández|Alberto Fernandez;Fernández
+act|¿Quién fue presidente de México entre 2018 y 2024?|Andrés Manuel López Obrador|López Obrador;AMLO;Lopez Obrador
+act|¿Qué joven presidente asumió el cargo en Chile en 2022?|Gabriel Boric|Boric
+act|¿Qué país nórdico se unió a la OTAN en abril de 2023?|Finlandia
+act|¿Qué país adoptó el euro el 1 de enero de 2023?|Croacia
+act|¿Quién gobierna Rusia como presidente desde el año 2000, con un breve paréntesis como primer ministro?|Vladímir Putin|Putin;Vladimir Putin
+act|¿Qué dirigente gobierna China como presidente desde 2013?|Xi Jinping|Xi
+act|¿Qué ex primer ministro japonés fue asesinado en 2022?|Shinzo Abe|Abe
+act|¿Cómo se llama la enfermedad antes llamada viruela del mono?|Mpox|Viruela del mono
+act|¿Qué museo parisino sufrió un robo de joyas de la corona en octubre de 2025?|El Louvre|Louvre
+act|¿Qué país sufrió un terremoto devastador en febrero de 2023 junto con Siria?|Turquía|Turquia
+act|¿Qué isla hawaiana sufrió un incendio mortal en agosto de 2023?|Maui
+act|¿Qué huracán devastó Puerto Rico en septiembre de 2017?|María|Maria;Huracán María
+act|¿En qué ciudad española se incendió un edificio residencial en Campanar en febrero de 2024?|Valencia
+act|¿A qué humorista golpeó Will Smith en la gala de los Oscar de 2022?|Chris Rock|Rock
+act|¿Cuántos países forman la Unión Europea desde la salida del Reino Unido?|27|veintisiete
+act|¿Qué político estadounidense, con su famosa gorra roja, usó el lema «Make America Great Again»?|Donald Trump|Trump
+act|¿Quién es la mujer del rey Felipe VI?|Letizia|La reina Letizia;Letizia Ortiz
+act|¿Qué dictador gobernó España desde 1939 hasta 1975?|Francisco Franco|Franco
+act|¿En qué año se aprobó la Constitución española vigente?|1978
+his|¿En qué año llegó el ser humano a la Luna?|1969
+his|¿En qué año cayó el Muro de Berlín?|1989
+his|¿En qué año empezó la Guerra Civil española?|1936
+his|¿En qué año empezó la Segunda Guerra Mundial?|1939
+his|¿En qué año se hundió el Titanic?|1912
+his|¿En qué año llegó Colón a América?|1492
+his|¿Quién fue el primer presidente de Estados Unidos?|George Washington|Washington
+his|¿Qué civilización construyó Machu Picchu?|Los incas|Inca;Incas
+his|¿Quién fue la última reina del antiguo Egipto?|Cleopatra
+his|¿Qué marino español completó la primera vuelta al mundo tras la muerte de Magallanes?|Juan Sebastián Elcano|Elcano
+his|¿Quién pintó el techo de la Capilla Sixtina?|Miguel Ángel|Michelangelo;Miguel Angel
+his|¿Qué ciudad italiana fue destruida por el volcán Vesubio en el año 79?|Pompeya|Pompeii
+his|¿Qué emperador francés fue derrotado en Waterloo en 1815?|Napoleón|Napoleon;Napoleón Bonaparte
+his|¿Qué país regaló la Estatua de la Libertad a Estados Unidos?|Francia
+his|¿Qué reina inglesa tuvo el reinado más largo antes de Isabel II?|Victoria|La reina Victoria
+his|¿En qué ciudad italiana nació Cristóbal Colón según la tradición más aceptada?|Génova|Genova
+mat|¿Cuánto es 7 por 8?|56
+mat|¿Cuánto es 9 por 9?|81
+mat|¿Cuánto es 12 por 11?|132
+mat|¿Cuánto es 15 por 4?|60
+mat|¿Cuánto es 13 por 6?|78
+mat|¿Cuánto es 25 por 8?|200
+mat|¿Cuánto es 144 dividido entre 12?|12|doce
+mat|¿Cuánto es 81 dividido entre 9?|9|nueve
+mat|¿Cuánto es 100 dividido entre 4?|25
+mat|¿Cuánto es 5 al cuadrado?|25
+mat|¿Cuánto es 7 al cuadrado?|49
+mat|¿Cuánto es 12 al cuadrado?|144
+mat|¿Cuánto es 3 al cubo?|27
+mat|¿Cuánto es 2 elevado a 10?|1024
+mat|¿Cuál es la raíz cuadrada de 81?|9|nueve
+mat|¿Cuál es la raíz cuadrada de 144?|12|doce
+mat|¿Cuál es la raíz cuadrada de 49?|7|siete
+mat|¿Cuál es la raíz cuadrada de 169?|13|trece
+mat|¿Cuál es la raíz cuadrada de 400?|20|veinte
+mat|¿Cuánto es el 10 por ciento de 350?|35
+mat|¿Cuánto es el 25 por ciento de 80?|20|veinte
+mat|¿Cuánto es la mitad de 250?|125
+mat|¿Cuánto es la tercera parte de 90?|30|treinta
+mat|¿Cuánto es 1000 menos 357?|643
+mat|¿Cuántos minutos hay en 3 horas?|180
+mat|¿Cuántos segundos hay en 2 minutos?|120
+mat|¿Cuánto es 6 al cuadrado más 4?|40|cuarenta
+mat|¿Cuál es el siguiente número primo después del 7?|11|once
+mat|¿Cuántos lados tiene un octógono?|8|ocho
+mat|¿Cuántos grados suman los ángulos de un triángulo?|180
+mat|¿Cuántos grados tiene un ángulo recto?|90|noventa
+mat|¿Cuántos meses del año tienen 31 días?|7|siete
+mat|¿Qué número romano es el XIV?|14|catorce
+mat|¿Cuántos ceros tiene un millón?|6|seis
+mat|¿Cuánto es 8 por 7 menos 6?|50|cincuenta
+cul|¿Qué metal es líquido a temperatura ambiente?|Mercurio
+cul|¿Qué planeta es famoso por sus anillos?|Saturno
+cul|¿Cómo se llama la capa de la atmósfera que nos protege de los rayos ultravioleta?|Capa de ozono|Ozono
+cul|¿A cuántos grados centígrados hierve el agua a nivel del mar?|100|cien
+cul|¿Cuántos estados tiene Estados Unidos?|50|cincuenta
+cul|¿Cuántos colores tiene la bandera de Colombia?|3|tres
+cul|¿Qué país tiene una bandera blanca con un círculo rojo en el centro?|Japón|Japon
+cul|¿Qué selección tiene más Mundiales de fútbol, con cinco?|Brasil
+cul|¿De qué país es originaria la pizza?|Italia
+cul|¿De qué país es el sushi?|Japón|Japon
+cul|¿Cuál es el ingrediente principal del hummus?|Garbanzos|Los garbanzos
+cul|¿Qué se come en España en Nochevieja con las campanadas?|Las doce uvas|Uvas;12 uvas
+cul|¿Cuál es el idioma más hablado del mundo por hablantes nativos?|Chino mandarín|Mandarín;Chino
+cul|¿Cuál es el idioma oficial de Brasil?|Portugués|Portugues
+cul|¿Cómo se dice «gracias» en inglés?|Thank you|Thanks
+cul|¿Quién escribió Romeo y Julieta?|William Shakespeare|Shakespeare
+cul|¿Cómo se llama el escudero de Don Quijote?|Sancho Panza|Sancho
+cul|¿Qué personaje de Tolkien lleva el Anillo Único hasta el Monte del Destino?|Frodo|Frodo Bolsón
+cul|¿Quién escribió las novelas en las que se basa Juego de Tronos?|George R. R. Martin|Martin;George Martin
+cul|¿Cómo se llama el director de Hogwarts en los primeros libros de Harry Potter?|Dumbledore|Albus Dumbledore
+cin|¿Qué película musical de 2016 protagonizaron Ryan Gosling y Emma Stone?|La La Land
+cin|¿Cómo se llama el país ficticio de Pantera Negra?|Wakanda
+cin|¿Cómo se llama el villano que chasquea los dedos en Vengadores: Infinity War?|Thanos
+cin|¿Qué actor interpretó a Jack en Titanic?|Leonardo DiCaprio|DiCaprio;Di Caprio
+cin|¿Cómo se llama la urbanización de la serie La que se avecina?|Mirador de Montepinar|Montepinar
+tv|¿Quién presenta el concurso Saber y ganar de La 2?|Jordi Hurtado|Hurtado
+tv|¿Quién presenta La ruleta de la suerte?|Jorge Fernández
+mus|¿Con qué rapera estadounidense cantó Karol G el tema Tusa?|Nicki Minaj|Minaj
+mus|¿Quién canta Blinding Lights?|The Weeknd|Weeknd
+mus|¿Quién canta As It Was?|Harry Styles|Styles
+mus|¿Qué cantante lanzó Flowers en 2023?|Miley Cyrus|Cyrus`;
+const QUIZ=QTXT.split('\n').filter(Boolean).map(l=>l.split('|'));
+
+const WTXT={
+ani:'pingüino|mono|jirafa|serpiente|gallina|canguro|tortuga|pulpo|cocodrilo|gorila|pez globo|perezoso|león|oso|perro|gato|flamenco|rana|araña|caballo|delfín|pavo real|cangrejo|loro|conejo|lobo|vaca|cerdo|águila|mosquito|caracol|tiburón|hipopótamo|gusano|camello|koala|panda|búho',
+pro:'dentista|bombero|camarero|peluquero|astronauta|fotógrafo|maquinista de tren|médico|cocinero|albañil|director de orquesta|payaso|futbolista|pescador|profesor|policía|DJ|mago|jardinero|cartero|piloto de avión|bailarín de ballet|pintor|veterinario|torero|árbitro|barrendero|mecánico|panadero|enfermera|detective|domador de leones|socorrista|youtuber|soldador|presentador de televisión',
+cin:'Titanic|El Rey León|Shrek|Frozen|Tiburón|Spider-Man|Buscando a Nemo|Los Increíbles|Piratas del Caribe|Matrix|Jurassic Park|Aladdín|Rocky|Superman|Cazafantasmas|Karate Kid|La Casa de Papel|Los Simpson|Barbie|Oppenheimer|Stranger Things|El juego del calamar|Wicked|Del revés|Avatar|El Señor de los Anillos|Star Wars|Gru, mi villano favorito|Los Vengadores|Batman|Pinocho|Cars|Madagascar|Bob Esponja|Peppa Pig|Pocoyó|Dragon Ball|Pokémon',
+acc:'lavarse los dientes|tocar la guitarra|hacer surf|ir en bicicleta|freír un huevo|planchar|montar a caballo|bailar salsa|esquiar|lavar el coche|tender la ropa|jugar al tenis|hacerse un selfi|subir una montaña|hacer la compra|cortarse las uñas|conducir un tren|encender una hoguera|dormir|estornudar|bostezar|abrir un paraguas|hacer yoga|bañar a un perro|fregar los platos|jugar a los bolos|cantar en un karaoke|montar una tienda de campaña|llorar de risa|tocar el piano|pintar una pared|hacer un pastel|barrer|beber de una pajita|ponerse el abrigo|aplaudir|bucear|jugar al escondite',
+dep:'fútbol|natación|boxeo|golf|ciclismo|baloncesto|esquí|voleibol|gimnasia rítmica|tiro con arco|karate|ping-pong|remo|escalada|patinaje|rugby|salto de altura|pádel|esgrima|levantamiento de pesas|tenis|balonmano|surf|atletismo|salto de longitud|lanzamiento de jabalina|hockey|judo|equitación|triatlón|skate|waterpolo|béisbol|snowboard|bádminton',
+obj:'teléfono móvil|aspiradora|secador de pelo|bicicleta|reloj|tijeras|microondas|silla|globo|escoba|martillo|gafas|tostadora|nevera|cámara de fotos|corbata|mochila|llaves|cepillo de dientes|espejo|televisión|lavadora|batidora|candado|calculadora|balón|auriculares|abanico|reloj de arena|taladro|sombrero|botella|cuchara|enchufe|cinturón|patinete|monopatín|dado',
+lug:'Torre Eiffel|Sagrada Familia|playa|estación de tren|supermercado|circo|gimnasio|hospital|castillo|cine|aeropuerto|montaña rusa|piscina|granja|desierto|faro|zoológico|Gran Muralla|pirámides|biblioteca|iglesia|discoteca|campo de fútbol|peluquería|panadería|museo|bosque|isla desierta|Coliseo romano|Estatua de la Libertad|volcán|cueva|parque de atracciones|cementerio|mercado',
+com:'pizza|hamburguesa|helado|sandía|paella|huevo frito|espaguetis|palomitas|plátano|piña|sushi|perrito caliente|churros|chocolate|tortilla de patatas|ensalada|croissant|arepa|patatas fritas|pollo asado|sopa|crepe|gambas|chicle|caramelo|zanahoria|aguacate|brócoli|limón|uvas|bocadillo|fideos|pulpo a la gallega|calçots|crema catalana|turrón|polo de hielo|algodón de azúcar',
+per:'Shakira|Messi|Cristiano Ronaldo|Rafa Nadal|Michael Jackson|Superman|Spider-Man|Papá Noel|Mario Bros|Pikachu|Harry Potter|Darth Vader|Bob Esponja|Homer Simpson|Mickey Mouse|Elsa de Frozen|Batman|Sherlock Holmes|Charlie Chaplin|Albert Einstein|Napoleón|Cleopatra|Bad Bunny|Rosalía|Lamine Yamal|Taylor Swift|Mr. Bean|Hulk|Wolverine|Don Quijote|Shrek|Cenicienta|Peter Pan|Gollum|Jack Sparrow|Freddie Mercury|Marc Márquez|Carlos Alcaraz|Pedro Pascal',
+fie:'Navidad|Nochevieja|Reyes Magos|Carnaval|Halloween|Semana Santa|San Jorge|castellers|sardana|Fallas de Valencia|Sanfermines|La Tomatina|Día de Muertos|fiesta de cumpleaños|boda|bautizo|graduación|las uvas de Nochevieja|el Gordo de Navidad|belén viviente|disfraz|piñata|fuegos artificiales|romería|verbena',
+nat:'volcán|tormenta|arcoíris|terremoto|cascada|iceberg|tornado|nieve|desierto|río|montaña|isla|selva|cueva|eclipse|luna llena|estrella fugaz|incendio forestal|ola gigante|pradera',
+tec:'videollamada|robot|dron|selfie|código QR|WiFi|inteligencia artificial|ChatGPT|TikTok|streaming|videojuego|mando de consola|realidad virtual|coche eléctrico|patinete eléctrico|pantalla táctil|batería baja|mensaje de WhatsApp|hacer un directo|audio de voz'};
+const WORDS=[];for(const t in WTXT)WTXT[t].split('|').forEach(w=>WORDS.push([t,w]));
+
+const DRAW='casa|árbol|sol|luna|estrella|flor|gato|perro|pez|pájaro|mariposa|elefante|jirafa|serpiente|tortuga|conejo|caballo|vaca|cerdo|gallina|pato|león|mono|cocodrilo|araña|caracol|abeja|pulpo|tiburón|ballena|delfín|pingüino|búho|oso|ratón|rana|murciélago|dinosaurio|unicornio|dragón|fantasma|payaso|princesa|rey|pirata|bruja|vampiro|robot|astronauta|extraterrestre|sirena|hada|mago|ninja|caballero|esqueleto|zombi|coche|autobús|avión|tren|barco|bicicleta|moto|cohete|helicóptero|submarino|camión|tractor|globo aerostático|velero|ambulancia|patinete|monopatín|paraguas|reloj|llave|candado|tijeras|martillo|escalera|silla|mesa|cama|lámpara|ventana|puerta|espejo|televisión|teléfono|ordenador|guitarra|piano|tambor|trompeta|micrófono|gafas|sombrero|corona|zapato|calcetín|camiseta|bufanda|guante|corbata|anillo|mochila|maleta|bolso|cepillo de dientes|peine|jabón|toalla|taza|vaso|botella|plato|cuchara|tenedor|cuchillo|sartén|olla|nevera|pizza|hamburguesa|helado|pastel|manzana|plátano|uvas|sandía|fresa|cereza|piña|limón|zanahoria|tomate|seta|huevo|queso|pan|galleta|caramelo|chocolate|paella|palomitas|perrito caliente|churro|tortilla|sushi|montaña|volcán|río|cascada|isla|playa|desierto|bosque|cueva|arcoíris|nube|lluvia|nieve|rayo|tornado|fuego|iceberg|cactus|palmera|seta gigante|girasol|rosa|tulipán|hoja|puente|castillo|iglesia|faro|molino|pirámide|torre Eiffel|Sagrada Familia|noria|tienda de campaña|casa en el árbol|iglú|cohete espacial|planeta|satélite|telescopio|balón de fútbol|portería|raqueta|canasta de baloncesto|bicicleta de montaña|patines|esquís|diana|trofeo|medalla|bandera|mapa|brújula|tesoro|cofre|espada|escudo|arco y flecha|catapulta|bomba|globo|regalo|árbol de Navidad|Papá Noel|reno|muñeco de nieve|calabaza de Halloween|corazón|beso|sonrisa|ojo|nariz|mano|pie|diente|cerebro|esqueleto de mano|ADN|cámara de fotos|dron|robot aspirador|auriculares|cargador|WiFi|enchufe|batería|mando de consola|selfie|emoji|cohete de fuegos|tren de FGC|Camp Nou|montaña de Montserrat|castell humano|arepa|café|caña de pescar|anzuelo|red de pesca|pala|rastrillo|regadera|carretilla|espantapájaros|granero|molino de viento|pirata con parche|calavera|ancla|timón|botella con mensaje|sirena en roca|hamaca|sombrilla|castillo de arena|chancla|gafas de sol|bañador|oveja|cabra|gallo|pavo real|paloma|jabalí|ardilla|erizo|castor|foca|pelícano|caballito de mar|cangrejo|langosta|camaleón|escorpión|mariquita|luciérnaga|hongo|nenúfar|bellota|raíz|tronco|ola|pala y cubo|colchoneta|flotador|bocadillo|bocata de jamón|hot dog|donut|polo de hielo|piruleta|cupcake|batido|tetera|batidora|tostadora|abrelatas|palillos chinos|gorro de cocinero|horno|plancha|cubo|aspiradora|esponja|ducha|secador|sombra de ojos|collar|pendiente|corona de rey|varita mágica|capa|lanza|honda|cañón|gancho|catalejo|isla del tesoro|bandera pirata|hacha|señal de stop|paso de cebra|farola|banco del parque|fuente|campanario|cabaña|aeropuerto|gasolinera|hospital|biblioteca|museo|gimnasio|parque de atracciones|algodón de azúcar|manzana de caramelo|globo de feria|tiro al blanco|malabarista|carpa|baraja de cartas|rey de ajedrez|mando|astronauta en la Luna|microscopio|pila|cable|antena|agenda|carta|sobre|cartero en bici|revista|libro abierto|pergamino|bandera de Colombia|guante de boxeo|banderín de córner|podio|guantes de portero|patinadora|submarinista|arquero|boxeador|futbolista chutando|portero parando|gigante de fiesta|calçots|botifarra|cava|Big Ben|Machu Picchu|café colombiano|bandeja paisa|cumbia|villancico|Rey Mago|telaraña|escoba de bruja|caldero|momia|herradura|espejo roto|duende|elfo|gnomo|yeti|kraken|minotauro|pegaso'.split('|');
+
+const SND='Un pato|Una vaca|Un gato enfadado|Una ambulancia|Un tren arrancando|Un coche de carreras|Un grifo goteando|Una gallina|Un lobo aullando|Un helicóptero|Un bebé llorando|Una moto arrancando|Una sirena de policía|Un perro ladrando|Un cerdo|Una abeja zumbando|Las olas del mar|Una tormenta con truenos|Una puerta que chirría|Una lavadora centrifugando|Un despertador|Un avión despegando|Un ratón|Un mono|Un tigre|Un fantasma|Una aspiradora|Un secador de pelo|Un cohete despegando|Un teléfono sonando|Un caballo|Un león rugiendo|Una rana|Un búho|Un tractor|Una motosierra|Un robot|Una olla a presión|Un globo que se deshincha|Alguien roncando|Un dinosaurio|Un pavo|Un burro|Una serpiente|Un martillo golpeando|Un bebé riéndose|Un gallo cantando|Una oveja|Un elefante|Una cabra|Un grillo|Un mosquito|Un cuervo|Una paloma|Un delfín|Una ballena|Un pingüino|Un gorila|Un pollito|Un loro hablando|Un cañón|Unos fuegos artificiales|Un trueno|La lluvia|El viento|Una cascada|Un fuego crepitando|Una cafetera hirviendo|Un microondas terminando|Una tostadora|Un cubito de hielo en un vaso|Unos pasos en la nieve|Una moto de agua|Un tren de vapor|Un barco con sirena|Un camión de bomberos|Un coche que no arranca|Un claxon|Un frenazo|Un patinete|Una bicicleta con timbre|Un portazo|Alguien bostezando|Alguien estornudando|Alguien con hipo|Alguien riendo a carcajadas|Alguien masticando chicle|Alguien sorbiendo un refresco|Alguien llorando|Un aplauso|Un estadio animando|Una ola de estadio|Un gol en el estadio|Un árbitro con silbato|Un balón rebotando|Una pelota de tenis|Un videojuego retro|Un mando de consola|Un móvil vibrando|Una notificación de WhatsApp|Una videollamada que se corta|Un dron|Un láser de Star Wars|Darth Vader respirando|Un coche de Fórmula 1|Un avión de papel|Una guitarra eléctrica|Un tambor|Una trompeta|Una orquesta afinando|Un violín desafinado|Un DJ pinchando|Un coro de iglesia|Una campana|Una sirena de barco|Un mar embravecido|Un volcán|Un terremoto|Un dragón|Un unicornio|Un bebé tiburón|Un cohete espacial|Una nave extraterrestre|Un perro gruñendo|Un perro aullando|Un gatito maullando|Un toro bufando|Una oveja balando|Un cordero|Un caballo relinchando|Un burro rebuznando|Un cerdo gruñendo|Un jabalí|Un conejo|Un hámster|Un ratón chillando|Una rata|Un zorro|Un lobo|Un oso rugiendo|Un tigre rugiendo|Una pantera|Un leopardo|Un elefante barritando|Un hipopótamo|Un rinoceronte|Una cebra|Un camello|Una llama|Un canguro|Un koala|Un chimpancé|Un gorila golpeándose el pecho|Un lémur|Un perezoso|Una foca|Un león marino|Una ballena cantando|Un tiburón|Un pulpo|Un cangrejo|Una serpiente de cascabel|Una serpiente silbando|Un cocodrilo|Un lagarto|Un gallo|Una gallina cacareando|Un pollito piando|Un pato graznando|Un ganso|Un cisne|Un pavo real|Un loro|Un canario|Un ruiseñor|Un gorrión|Una paloma arrullando|Una urraca|Un búho ululando|Una lechuza|Un águila|Un buitre|Un flamenco|Un pelícano|Una gaviota|Un pájaro carpintero|Un mosquito zumbando|Una mosca|Una abeja|Un avispón|Una cigarra|Un saltamontes|Una mariposa batiendo alas|Un enjambre|Un dinosaurio rugiendo|Un T-Rex|Un velociraptor|Un monstruo|Un zombi|Un fantasma gimiendo|Un vampiro|Una bruja riendo|Un gigante|Un troll|Un ogro|Un robot averiado|Un extraterrestre|Un sable láser|Darth Vader|Chewbacca|Un Minion|Pikachu|Un Pokémon|Un videojuego de carreras|Sonic recogiendo anillos|Pac-Man|Una máquina tragaperras|Unos dados rodando|Una baraja barajándose|Una pelota de ping-pong|Una pelota de golf|Un bate de béisbol|Un puñetazo de boxeo|Una carrera de caballos|Una carrera de atletismo|Un disparo de salida|Un saque de tenis|Un remate de voleibol|Un canasto de baloncesto|Un tiro de portería|Un silbido de árbitro|Una afición cantando|Una vuvuzela|Un petardo|Una banda de música|Una flauta|Una armónica|Un acordeón|Un violonchelo|Un contrabajo|Un arpa|Un xilófono|Una pandereta|Unas maracas|Un bombo|Una batería|Un órgano|Un piano|Un banjo|Un ukelele|Un theremín|Un beatbox|Una ópera|Un villancico|Un cumpleaños feliz|Un karaoke desafinado|Un móvil con tono antiguo|Una alarma de coche|Una alarma de incendios|Una alarma de casa|Una sirena antiaérea|Un timbre|Una puerta cerrándose de golpe|Una puerta de coche|Una cerradura|Unas llaves|Una cremallera|Un velcro|Un grifo abierto|Una ducha|Una cisterna|Una cafetera|Una sartén friendo|Un huevo friéndose|Un cuchillo cortando|Una licuadora|Un horno|Una nevera zumbando|Un lavavajillas|Una plancha de vapor|Un ventilador|Un aire acondicionado|Una persiana|Un interruptor|Un fluorescente que parpadea|Un reloj de pared|Un metrónomo|Un cronómetro|Una tostadora saltando|Un abrelatas|Una lata abriéndose|Una botella descorchada|Un vaso rompiéndose|Un plato cayendo|Un cristal roto|Una bolsa de patatas|Un papel arrugándose|Unas tijeras cortando|Una grapadora|Una impresora|Un escáner|Una máquina de escribir|Un ratón de ordenador|Un módem antiguo|Un ordenador arrancando|Una videoconsola|Un dron volando|Una cámara de fotos|Un flash|Un cine|Una televisión sin señal|Una radio sintonizando|Un walkie-talkie|Un fax|Un cohete|Un submarino|Un barco de vapor|Una barca de remos|Un velero|Un petrolero|Un metro|Un tranvía|Un autobús|Un camión de la basura|Un coche de policía|Un avión de hélice|Un globo aerostático|Un patinete eléctrico|Un quad|Una excavadora|Un martillo neumático|Una cortadora de césped|Un soplador de hojas|Un martillo|Un clavo|Una lija|Una fragua|Un yunque|Un río|Una tormenta|Un trueno lejano|Un rayo|La lluvia en el tejado|El granizo|El viento aullando|Una ventisca|Un huracán|Un tornado|Una avalancha|Un glaciar|Las olas|Una playa|Un oleaje|Un géiser|Un fuego|Una barbacoa|Unas ramas crujiendo|Unas hojas secas|Unos pasos en la grava|Unos pasos de tacones|Unos zapatos mojados|Una persona bostezando|Una persona estornudando|Una persona silbando|Una persona riendo|Una persona llorando|Una persona gritando|Una persona masticando|Una persona sorbiendo|Una persona eructando|Una persona bebiendo|Una persona con frío|Una persona asustada|Una persona aplaudiendo|Un bebé balbuceando|Un niño pequeño|Una multitud|Un estadio|Un mercado|Una cafetería|Una discoteca|Un hospital|Un colegio|Un recreo|Una obra|Una estación de tren|Una feria|Un circo|Un zoo|Una granja|Un bosque por la noche|El desierto|La nieve|Un pantano|Una cueva|Un castillo encantado|Una nave espacial|Un tren de FGC|Un tren que pita|Un tren cruzando un túnel'.split('|');
+
+const TABU='Pato:pájaro,cisne,agua,cuac,plumas|Playa:arena,mar,sol,bañador,ola|Pizza:queso,masa,Italia,horno,tomate|Bicicleta:ruedas,pedales,manillar,montar,dos|Navidad:regalos,árbol,Papá Noel,diciembre,turrón|Médico:hospital,enfermo,bata,doctor,salud|Cumpleaños:tarta,velas,regalos,años,fiesta|Fútbol:balón,gol,portero,campo,pelota|Tren:vías,estación,vagón,locomotora,metro|Perro:ladrar,mascota,hueso,cola,animal|Gato:maullar,mascota,bigotes,ratón,felino|Café:taza,cafeína,leche,desayuno,bebida|Lluvia:agua,nubes,paraguas,mojado,gotas|Cama:dormir,sábanas,almohada,noche,colchón|Teléfono:llamar,móvil,pantalla,número,contestar|Cine:película,palomitas,pantalla,entradas,sala|Escuela:profesor,alumno,clase,cole,estudiar|Vacaciones:viaje,playa,descansar,hotel,verano|Cocina:comida,cocinar,nevera,fuego,chef|Coche:ruedas,conducir,carretera,motor,volante|Jardín:plantas,flores,césped,regar,árbol|Ordenador:teclado,pantalla,internet,ratón,portátil|Reloj:hora,tiempo,manecillas,muñeca,minutos|Boda:novia,novio,casarse,anillo,iglesia|Luna:noche,cielo,satélite,estrellas,llena|Zapatos:pies,calzado,cordones,calcetines,suela|Helado:frío,cucurucho,vainilla,verano,postre|Chocolate:cacao,dulce,negro,tableta,marrón|Piscina:agua,nadar,bañador,verano,natación|Reina:rey,corona,trono,palacio,princesa|Pirata:barco,tesoro,parche,loro,mar|Detective:crimen,lupa,investigar,policía,misterio|Montaña:alta,nieve,escalar,cumbre,monte|Fuego:quemar,llamas,calor,bombero,humo|Libro:leer,páginas,autor,biblioteca,historia|Supermercado:comprar,carrito,caja,comida,tienda|Avión:volar,aeropuerto,alas,piloto,cielo|Vampiro:sangre,colmillos,Drácula,murciélago,noche|Mago:varita,trucos,magia,sombrero,conejo|Fiesta:bailar,música,amigos,cumpleaños,celebrar|Colombia:café,Bogotá,país,Shakira,arepa|Barcelona:Gaudí,Cataluña,Sagrada Familia,Barça,Ramblas|Tren de FGC:estación,vagón,Igualada,vías,maquinista|Oso:animal,bosque,miel,peludo,pardo|Abeja:miel,zumbar,insecto,picar,colmena|Manzana:fruta,roja,árbol,Newton,pelar|Sol:día,luz,calor,estrella,cielo|Nieve:blanca,frío,esquí,invierno,copo|Queso:leche,ratón,vaca,amarillo,pizza|Tractor:campo,granja,agricultor,ruedas,arar|Ballena:mar,grande,azul,animal,agua|Dinosaurio:extinto,Jurásico,huevo,antiguo,grande|Estrella:cielo,noche,brillar,Sol,fugaz|Tiburón:mar,dientes,aleta,pez,peligroso|Granja:animales,campo,vaca,gallina,tractor|Bufanda:cuello,frío,lana,invierno,abrigo|Paraguas:lluvia,mojado,abrir,agua,mango|Whatsapp:mensaje,móvil,chat,enviar,aplicación|Instagram:fotos,red social,seguidores,historias,Meta|TikTok:vídeos,baile,red social,China,móvil|YouTube:vídeos,canal,suscriptores,Google,ver|Netflix:series,películas,streaming,suscripción,plataforma|Spotify:música,canciones,streaming,playlist,escuchar|Videojuego:consola,jugar,mando,pantalla,nivel|Selfie:foto,móvil,cámara,autorretrato,sonreír|Internet:red,web,conexión,navegar,wifi|Robot:máquina,metal,humano,programar,mecánico|Inteligencia artificial:ChatGPT,robot,máquina,datos,algoritmo|Dron:volar,cámara,mando,aparato,hélices|Coche eléctrico:batería,enchufe,Tesla,gasolina,cargar|Mundial:fútbol,copa,selecciones,cuatro años,campeón|Champions:copa,Europa,equipos,final,orejona|Gol:red,portería,balón,marcar,delantero|Penalti:portero,área,once metros,falta,disparar|Árbitro:silbato,tarjeta,campo,pitar,juez|Tenis:raqueta,pelota,red,Nadal,set|Maratón:correr,42 kilómetros,carrera,meta,atleta|Olimpiadas:medalla,Juegos,deporte,París,atletas|Fórmula 1:coches,pilotos,circuito,carrera,Hamilton|Moto:ruedas,casco,motor,dos ruedas,Márquez|Eurovisión:concurso,canción,países,Europa,festival|Concierto:música,cantante,entradas,escenario,público|Karaoke:cantar,micrófono,letra,canción,pantalla|Disfraz:Halloween,carnaval,ropa,máscara,fiesta|Máscara:cara,ojos,disfraz,tapar,carnaval|Regalo:cumpleaños,Navidad,paquete,papel,sorpresa|Cumbre:montaña,alta,punta,escalar,cima|Volcán:lava,erupción,montaña,fuego,ceniza|Terremoto:tierra,temblor,sismo,Richter,derrumbe|Tormenta:rayos,truenos,lluvia,nubes,viento|Arcoíris:colores,lluvia,sol,siete,cielo|Desierto:arena,calor,camello,cactus,seco|Selva:árboles,animales,tropical,Amazonas,jungla|Isla:mar,agua,rodeada,playa,desierta|Puente:río,cruzar,agua,carretera,pasar|Castillo:rey,torre,medieval,fortaleza,príncipe|Biblioteca:libros,leer,silencio,préstamo,estantería|Museo:arte,cuadros,visitar,exposición,Prado|Hospital:médico,enfermo,urgencias,cama,enfermera|Aeropuerto:avión,vuelo,maleta,facturar,pista|Hotel:habitación,dormir,recepción,huésped,noche|Restaurante:comer,camarero,mesa,carta,cenar|Bar:bebidas,camarero,tapas,cervezas,barra|Panadería:pan,harina,horno,bollos,panadero|Peluquería:pelo,cortar,tijeras,champú,peinar|Gimnasio:pesas,ejercicio,entrenar,músculos,máquinas|Cárcel:preso,rejas,delito,celda,policía|Policía:ladrón,multa,uniforme,placa,ley|Bombero:fuego,manguera,camión,rescatar,casco|Profesor:clase,enseñar,alumnos,colegio,pizarra|Cocinero:comida,restaurante,fogón,receta,gorro|Pintor:cuadro,pincel,arte,colores,lienzo|Cantante:canciones,voz,micrófono,música,concierto|Actor:película,teatro,papel,cine,interpretar|Futbolista:balón,equipo,campo,gol,jugar|Astronauta:espacio,cohete,Luna,NASA,traje|Pastel:tarta,dulce,horno,nata,cumpleaños|Galleta:dulce,chocolate,masa,mojar,horno|Pan:harina,horno,barra,tostada,panadería|Huevo:gallina,tortilla,freír,cáscara,yema|Paella:arroz,Valencia,azafrán,mariscos,sartén|Tortilla:huevo,patatas,cebolla,sartén,española|Jamón:cerdo,serrano,pata,ibérico,cortar|Churros:chocolate,fritos,masa,desayuno,azúcar|Arroz:grano,paella,blanco,cocer,Asia|Pasta:espaguetis,Italia,macarrones,salsa,cocer|Sopa:caldo,cuchara,plato,caliente,fideos|Ensalada:lechuga,tomate,verduras,aceite,fresca|Fruta:manzana,pera,vitaminas,fresca,naranja|Naranja:fruta,zumo,color,cítrico,pelar|Plátano:fruta,amarillo,mono,pelar,Canarias|Limón:ácido,amarillo,cítrico,limonada,agrio|Agua:beber,mar,transparente,líquido,grifo|Cerveza:alcohol,espuma,bar,rubia,botellín|Vino:uva,tinto,botella,copa,alcohol|Leche:vaca,blanca,desayuno,cereales,beber|Miel:abejas,dulce,colmena,amarilla,néctar|Sal:cocina,sabor,mar,salada,pimienta|Azúcar:dulce,blanco,café,cucharada,caña|Espejo:reflejo,mirarse,cristal,cara,baño|Ventana:cristal,abrir,casa,vistas,cortina|Puerta:abrir,llave,entrar,casa,cerrar|Llave:abrir,cerradura,puerta,candado,metal|Tijeras:cortar,papel,filo,pelo,dos hojas|Martillo:clavo,golpear,herramienta,madera,mango|Escoba:barrer,suelo,limpiar,bruja,polvo|Lavadora:ropa,lavar,detergente,tambor,centrifugar|Nevera:frío,comida,cocina,congelador,puerta|Televisión:programas,pantalla,mando,canal,ver|Sofá:sentarse,salón,cojines,tumbarse,tresillo|Silla:sentarse,mesa,patas,respaldo,asiento|Cuchara:sopa,cubierto,comer,metal,postre|Tenedor:pinchar,cubierto,comer,puntas,pasta|Mochila:espalda,colegio,llevar,libros,tirantes|Maleta:viaje,ropa,ruedas,equipaje,aeropuerto|Gafas:ver,ojos,cristales,sol,montura|Sombrero:cabeza,sol,ala,gorro,vaquero|Corona:rey,cabeza,oro,reina,joya|Anillo:dedo,boda,oro,joya,compromiso|Guitarra:cuerdas,tocar,música,acústica,rasguear|Piano:teclas,música,tocar,blancas,negras|Tambor:golpear,baquetas,ritmo,música,batería|Dado:tirar,juego,seis,puntos,azar|Cartas:baraja,juego,póker,naipes,mazo|Ajedrez:tablero,rey,peón,jaque,piezas|Hermano:hermana,familia,padres,hijo,mismo|Bebé:niño,llorar,pañal,biberón,recién nacido|Novio:novia,pareja,boda,amor,salir|Beso:labios,boca,amor,pareja,dar|Vecino:casa,edificio,piso,al lado,comunidad|Jefe:trabajo,empresa,mandar,oficina,empleado|Trabajo:empleo,jefe,sueldo,oficina,labor|Sueldo:dinero,nómina,trabajo,cobrar,mes|Dinero:euros,banco,monedas,billetes,pagar|Banco:dinero,cuenta,ahorrar,caja,hipoteca|Tarjeta:pagar,crédito,banco,cajero,plástico|Hipoteca:casa,banco,préstamo,pagar,cuota|Piso:casa,vivienda,alquiler,apartamento,habitaciones|Casa:hogar,vivir,piso,techo,familia|Habitación:cama,dormir,casa,hotel,cuarto|Baño:ducha,váter,lavabo,agua,aseo|Ducha:agua,baño,jabón,lavarse,grifo|Cepillo:dientes,pelo,peinar,limpiar,cerdas|Peine:pelo,cabello,peinar,cepillo,dientes|Jabón:lavar,manos,espuma,limpiar,baño|Toalla:secar,baño,playa,mojado,tela|Pijama:dormir,cama,noche,ropa,camisón|Pantalones:piernas,ropa,vaqueros,cinturón,bolsillos|Chaqueta:abrigo,ropa,frío,manga,cremallera|Calcetines:pies,pares,zapatos,lana,agujero|Vaqueros:pantalones,tela,azules,denim,ropa|Falda:mujer,ropa,piernas,corta,vestido|Gorra:cabeza,visera,sol,sombrero,béisbol|Reloj de pulsera:muñeca,hora,correa,tiempo,minutos|Perfume:olor,fragancia,oler,frasco,colonia|Espejo retrovisor:coche,mirar,atrás,conducir,cristal|Gasolina:coche,combustible,depósito,gasolinera,litros|Gasolinera:coche,gasolina,repostar,surtidor,depósito|Semáforo:rojo,verde,calle,cruce,coches|Autobús:parada,viajeros,pasajeros,conductor,línea|Metro:subterráneo,estación,tren,andén,billete|Taxi:coche,conductor,carrera,pagar,ciudad|Autopista:coches,peaje,carretera,velocidad,viaje|Peaje:autopista,pagar,coche,cabina,carretera|Multa:policía,pagar,infracción,velocidad,sanción|Carnet:conducir,licencia,examen,coche,DGT|Examen:preguntas,aprobar,estudiar,nota,suspender|Estudiante:colegio,universidad,clase,aprender,libros|Universidad:carrera,estudiante,facultad,título,campus|Título:diploma,universidad,estudios,graduarse,papel|Pizarra:escribir,tiza,clase,profesor,colegio|Lápiz:escribir,dibujar,goma,punta,madera|Linterna:luz,pilas,oscuro,noche,alumbrar|Vela:cera,llama,luz,cumpleaños,fuego|Cerilla:fuego,encender,llama,caja,palo|Mechero:fuego,encender,cigarrillo,llama,gas|Globo:aire,inflar,fiesta,explotar,helio|Piñata:fiesta,caramelos,golpear,cumpleaños,México|Disco:música,bailar,vinilo,canción,álbum|Álbum:fotos,canciones,música,cantante,discos|Canción:música,cantar,letra,melodía,estribillo|Cantar:voz,canción,música,micrófono,letra|Bailar:música,baile,pareja,moverse,discoteca|Discoteca:bailar,música,noche,copas,fiesta|Concierto en directo:cantante,público,música,escenario,entradas|Entrada:cine,concierto,comprar,ticket,teatro|Teatro:actores,obra,escenario,función,público|Circo:payaso,carpa,trapecio,leones,acróbatas|Magia:truco,mago,varita,conejo,ilusión|Chiste:gracioso,reír,contar,humor,broma|Broma:gastar,reír,engañar,inocentada,gracia|Risa:reír,gracia,carcajada,divertido,chiste|Llorar:lágrimas,triste,ojos,pena,sollozo|Sueño:dormir,cama,soñar,noche,cansado|Miedo:susto,asustado,terror,temer,pánico|Monstruo:miedo,feo,grande,cuento,criatura|Bruja:escoba,hechizo,Halloween,sombrero,poción|Zombi:muerto,vivo,cerebros,apocalipsis,caminar|Superhéroe:capa,poderes,salvar,Marvel,villano|Princesa:reina,príncipe,castillo,cuento,corona|Príncipe:rey,princesa,castillo,cuento,corona|Dragón:fuego,volar,cuento,alas,monstruo|Unicornio:cuerno,caballo,mágico,blanco,arcoíris|Hada:varita,alas,cuento,mágica,polvo|Gigante:grande,enorme,alto,cuento,pequeño|Enano:pequeño,bajo,cuento,Blancanieves,siete|Robin Hood:arco,flechas,bosque,ladrón,pobres|Sherlock Holmes:detective,Watson,lupa,Londres,pipa|Batman:murciélago,Gotham,capa,Joker,superhéroe|Superman:capa,volar,Kriptón,superhéroe,Clark Kent|Harry Potter:mago,Hogwarts,varita,cicatriz,libros|Minecraft:bloques,cubos,construir,Creeper,videojuego|Mario Bros:fontanero,Nintendo,Luigi,hongo,Peach|Zelda:Link,Nintendo,Hyrule,espada,princesa|Pac-Man:comecocos,fantasmas,amarillo,laberinto,arcade|FIFA:videojuego,fútbol,EA,consola,jugadores|Playstation:Sony,consola,mando,videojuego,jugar|Nintendo:Mario,consola,Switch,videojuego,Japón|Xbox:Microsoft,consola,mando,videojuego,jugar|Twitch:streamer,directo,videojuegos,Ibai,ver|Streamer:directo,Twitch,videojuegos,canal,espectadores|Youtuber:vídeos,canal,suscriptores,YouTube,grabar|Influencer:redes,seguidores,Instagram,fama,marcas|Emoji:carita,móvil,mensaje,WhatsApp,dibujo|Meme:imagen,gracioso,internet,viral,chiste|Contraseña:clave,secreta,ordenador,cuenta,acceso|Correo:email,enviar,carta,mensaje,bandeja|Mensaje:enviar,móvil,WhatsApp,texto,chat|Llamada:teléfono,móvil,llamar,hablar,contestar|Videollamada:cámara,pantalla,Zoom,llamada,hablar|Pantalla:móvil,televisión,ordenador,ver,táctil|Batería:móvil,carga,energía,pilas,cargar|Cable:enchufe,conectar,cargador,corriente,USB|Auriculares:música,oídos,escuchar,cascos,cable|Altavoz:sonido,música,volumen,bocina,Bluetooth|Cámara:fotos,vídeo,grabar,objetivo,flash|Foto:cámara,imagen,móvil,retrato,álbum|Capítulo:serie,libro,episodio,parte,temporada|Actriz:película,cine,papel,Oscar,interpretar|Oscar:premio,cine,estatuilla,Hollywood,gala|Premio:ganar,trofeo,concurso,medalla,recibir|Trofeo:copa,ganar,premio,campeón,dorado|Medalla:oro,plata,bronce,olimpiadas,ganar|Copa:trofeo,ganar,campeón,vino,vaso|Entrenador:equipo,jugadores,banquillo,táctica,fútbol|Delantero:gol,marcar,fútbol,ataque,equipo|Afición:hinchas,equipo,animar,estadio,seguidores|Real Madrid:blanco,Bernabéu,fútbol,Madrid,Champions|Camp Nou:Barça,estadio,fútbol,Barcelona,azulgrana|Lamine Yamal:Barça,joven,fútbol,España,Eurocopa|Alcaraz:tenis,español,Murcia,raqueta,Wimbledon|Rafa Nadal:tenis,Mallorca,Roland Garros,raqueta,tierra batida|Fernando Alonso:Fórmula 1,piloto,Asturias,coche,Aston Martin|Marc Márquez:moto,piloto,MotoGP,Cervera,Ducati|Bizarrap:productor,sesiones,Argentina,música,gafas|Shakira:colombiana,cantante,caderas,Barranquilla,Waka Waka|Rosalía:cantante,Motomami,Barcelona,Lux,flamenco|Bad Bunny:cantante,Puerto Rico,reguetón,Benito,conejo|Karol G:cantante,colombiana,Bichota,Medellín,reguetón|Messi:argentino,fútbol,Barça,Rosario,pulga|Elon Musk:Tesla,SpaceX,millonario,Twitter,cohetes|Presidente:país,gobierno,elecciones,jefe,mandar|Elecciones:votar,urnas,partido,candidato,papeleta|Votar:urnas,elecciones,papeleta,partido,elegir|Juez:tribunal,sentencia,justicia,juicio,ley|Ladrón:robar,policía,banco,cárcel,delito|Asesino:matar,crimen,policía,culpable,detective|Himno:canción,país,bandera,estadio,nacional|Frontera:país,pasaporte,aduana,límite,cruzar|Turista:viaje,visitar,vacaciones,cámara,guía|Billete:avión,tren,comprar,viaje,dinero|Equipaje:maleta,viaje,facturar,aeropuerto,bolsa|Tienda de campaña:acampar,camping,dormir,montaña,lona|Camping:tienda,acampar,naturaleza,dormir,verano|Hamburguesa:carne,pan,McDonald\'s,queso,patatas|Perrito caliente:salchicha,pan,mostaza,kétchup,comida rápida|Kétchup:tomate,salsa,patatas,hamburguesa,rojo|Mayonesa:huevo,salsa,blanca,aceite,bocadillo|Tostada:pan,desayuno,tostadora,aceite,mermelada|Mermelada:fruta,dulce,tostada,untar,fresa|Cereales:leche,desayuno,cuenco,maíz,caja|Zumo:naranja,fruta,beber,exprimir,vaso|Refresco:bebida,cola,burbujas,gaseosa,lata|Coca-Cola:refresco,burbujas,negra,bebida,rojo|Agua con gas:burbujas,bebida,botella,mineral,sed|Botella:líquido,agua,vidrio,tapón,beber|Vaso:beber,cristal,agua,copa,líquido|Taza:café,desayuno,asa,beber,té|Plato:comer,mesa,cocina,vajilla,cubiertos|Cuchillo:cortar,cubierto,filo,mesa,carne|Servilleta:mesa,limpiar,boca,papel,comer|Mantel:mesa,tela,comida,cubrir,cena|Mesa:silla,comer,patas,madera,comedor|Armario:ropa,guardar,puertas,habitación,perchas|Cajón:guardar,mueble,abrir,cómoda,deslizar|Alfombra:suelo,pies,tela,salón,pisar|Cortina:ventana,tela,cerrar,luz,colgar|Lámpara:luz,techo,bombilla,encender,mesilla|Bombilla:luz,lámpara,encender,eléctrica,fundida|Enchufe:corriente,cable,pared,electricidad,conectar|Ascensor:subir,bajar,piso,botón,edificio|Terraza:aire libre,bar,balcón,sol,mesas|Balcón:casa,piso,terraza,barandilla,fuera|Parque:niños,columpios,árboles,jugar,bancos|Columpio:parque,niño,balancear,cadenas,jugar|Tobogán:parque,niño,deslizar,agua,bajar|Mascota:animal,casa,perro,gato,cuidar|Pez:agua,mar,acuario,escamas,nadar|Acuario:peces,agua,cristal,pecera,mar|Pájaro:volar,alas,plumas,nido,cantar|Caballo:montar,galopar,establo,herradura,riendas|Vaca:leche,granja,muuu,campo,cuernos|Cerdo:granja,jamón,rosa,gruñir,cochino|Gallina:huevos,corral,granja,pollo,plumas|Oveja:lana,rebaño,campo,balar,pastor|Lobo:aullar,manada,bosque,perro,feroz|Zorro:astuto,bosque,cola,naranja,animal|Serpiente:veneno,reptil,culebra,piel,arrastrarse|León:rey,selva,melena,rugir,felino|Elefante:trompa,grande,gris,colmillos,África|Tortuga:caparazón,lenta,reptil,mar,verde|Pingüino:frío,Polo Sur,blanco y negro,hielo,ave|Delfín:mar,inteligente,saltar,mamífero,agua|Cocodrilo:río,dientes,reptil,verde,Nilo|Araña:telaraña,ocho patas,insecto,veneno,picar|Mosquito:picar,zumbar,verano,sangre,insecto|Hormiga:insecto,hormiguero,pequeña,trabajar,fila|Árbol de Navidad:Navidad,luces,adornos,abeto,regalos|Papá Noel:Navidad,regalos,barba,rojo,trineo|Reyes Magos:Navidad,regalos,camellos,enero,Oriente|Turrón:Navidad,dulce,almendras,Jijona,polvorón|Nochevieja:uvas,campanadas,año nuevo,fiesta,diciembre|Año nuevo:enero,uvas,celebrar,campanadas,calendario|Calendario:fechas,meses,días,año,pared|Verano:calor,playa,vacaciones,sol,junio|Invierno:frío,nieve,diciembre,abrigo,estación|Otoño:hojas,estación,octubre,caer,frío|Mediodía:doce,sol,hora,comida,día|Medianoche:doce,noche,oscuro,hora,tarde|Amanecer:sol,mañana,salida,temprano,día|Atardecer:sol,tarde,puesta,naranja,noche|Eclipse:sol,luna,sombra,astro,oscuro|Cometa:cielo,cola,espacio,astro,Halley|Planeta:espacio,Tierra,órbita,sistema solar,Marte|Marte:planeta,rojo,espacio,NASA,marcianos|Tierra:planeta,mundo,suelo,globo,nosotros|Cohete:espacio,despegar,NASA,astronauta,Luna|Satélite:espacio,Luna,órbita,GPS,señal|Mundo:planeta,Tierra,países,globo,todos|Océano:mar,agua,grande,Atlántico,Pacífico|Río:agua,cauce,corriente,puente,mar|Lago:agua,barca,montaña,pesca,orilla|Cascada:agua,caer,río,salto,montaña|Bosque:árboles,naturaleza,setas,hojas,animales|Flor:pétalos,rosa,jardín,oler,primavera|Rosa:flor,espinas,roja,Sant Jordi,regalo|Cactus:desierto,espinas,planta,pincha,verde|Semilla:planta,sembrar,árbol,crecer,tierra|Trigo:pan,harina,campo,espiga,cereal|Aceite:oliva,cocina,freír,botella,ensalada'.split('|').map(s=>{const [w,f]=s.split(':');return [w,f.split(',')]});
+
+const LABIOS='amapola|mariposa|chocolate|elefante|bicicleta|paraguas|televisión|helado|zapato|murciélago|cumpleaños|ventana|guitarra|naranja|tortuga|mermelada|hipopótamo|pelota|biblioteca|calcetín|abuelo|sandía|caramelo|ordenador|mariquita|campana|Barcelona|Colombia|Bucaramanga|Igualada|arepa|platanero|zanahoria|mochila|champiñón|bombilla|cucharilla|coliflor|ferrocarril|panadería|buenas noches|feliz cumpleaños|te quiero mucho|pásame la sal|qué hambre tengo|vamos a la playa|apaga la luz|hace mucho calor|me duele la cabeza|dónde están las llaves|ya hemos llegado|tengo sueño|que aproveche|hasta mañana|ven aquí ahora mismo|eres el mejor|Lamine Yamal|Messi|Rosalía|Bad Bunny|Shakira|Mundial|Eurovisión|ChatGPT|WhatsApp|Instagram|TikTok|Netflix|Spotify|Fortnite|Minecraft|Pokémon|Pikachu|Superman|Barbie|chimpancé|cocodrilo|dinosaurio|jirafa|pingüino|mapache|ornitorrinco|salchicha|croqueta|empanada|churro|tortilla|gazpacho|paella|lentejas|macarrones|hamburguesa|patatas fritas|limonada|batido|cuchara|tenedor|cuchillo|servilleta|refrigerador|lavadora|aspiradora|microondas|escalera|ascensor|autobús|metro|aeropuerto|semáforo|gasolinera|supermercado|farmacia|hospital|peluquería|cine|teatro|museo|estadio|montaña|volcán|cascada|desierto|isla|tormenta|arcoíris|relámpago|terremoto|invierno|primavera|verano|otoño|lunes|miércoles|domingo|navidad|nochevieja|carnaval|vacaciones|aburrido|cansado|contento|enfadado|sorprendido|vergüenza|sinvergüenza|campeón|trofeo|medalla|portería|penalti|córner|fuera de juego|buenos días|buenas tardes|muchas gracias|por favor|perdona|lo siento|no me lo creo|qué bien|vamos allá|estoy listo|nos vamos ya|tengo frío|tengo calor|me aburro|qué sorpresa|ven a cenar|a la mesa|ya es la hora|no hagas ruido|cierra la puerta|abre la ventana|dame un beso|te echo de menos|feliz Navidad|feliz año nuevo|enhorabuena|que descanses|cuidado con el escalón|llámame luego|nos vemos mañana|me encanta esta canción|pásame el mando|quién ha ganado|esto está riquísimo|tengo mucha sed|no encuentro el móvil|se me ha olvidado|qué buena idea|no me digas|fresa|cereza|melocotón|pera|uvas|aguacate|cebolla|lechuga|garbanzos|croquetas|salchichón|queso|galleta|magdalena|cruasán|pastel|piruleta|gominolas|palomitas|zumo|café con leche|desayuno|almuerzo|merienda|perro|gato|ratón|caballo|cerdo|oveja|conejo|serpiente|lagarto|rana|pez|ballena|loro|paloma|flamenco|búho|hormiga|mosquito|escarabajo|gusano|lobo|camello|koala|unicornio|fantasma|bruja|vampiro|princesa|mago|médico|cartero|futbolista|piloto|cantante|soldado|abuela|hermano|primo|amigo|vecino|bebé|niño|niña|mujer|pelo|ojo|nariz|boca|lengua|brazo|mano|uña|rodilla|pie|pierna|cerebro|falda|vestido|abrigo|bufanda|gorro|guantes|zapatillas|gafas|bolso|corbata|silla|sofá|espejo|cuadro|radio|auriculares|cuaderno|lápiz|pegamento|maleta|sombrilla|linterna|brújula|mapa|avión|coche|camión|submarino|globo|casa|castillo|puente|torre|calle|parque|río|lluvia|viento|sol|nube|tierra|aire|rojo|azul|verde|negro|gris|morado|uno|dos|tres|cien|marzo|mayo|agosto|diciembre|martes|jueves|viernes|sábado|hoy|ayer|siempre|claro que sí|ni de broma|otra vez|encantado|hola|ánimo|suerte|cuidado|silencio|socorro|corre|espera|mira|escucha|siéntate|levántate|come|duerme|cállate|tranquilo|no pasa nada|qué sueño|qué rico|qué lástima|qué horror|qué alegría|qué suerte|qué día|cuánto cuesta|cómo te llamas|no tengo ni idea|me he perdido|a ver|eso es|como quieras|por mí vale|hasta luego|buen viaje|buen provecho|feliz fin de semana|feliz cumpleaños a ti|la cuenta por favor|me gusta el chocolate|vamos al cine|vamos de vacaciones|haz los deberes|cepíllate los dientes|buenas noches cariño|te quiero|te quiero mucho mamá|no llores|no pasa nada cariño|ven a darme un abrazo|cuidado con el perro|qué bonita casa|no lo sé|me has asustado|me estás volviendo loco|se ha ido la luz|el tren sale a las ocho|atención por favor|vía número tres|gol de España|visca el Barça|feliz Navidad a todos|nos vemos en el cine'.split('|');
+/* ===================== TABLERO (5 lóbulos circulares unidos por 5 conos, como el Party original) ===================== */
+const NODES=[],NB=[],EDGES=[],SP=[];
+let START=-1,VW=700,VH=700,CX=350,CY=350,LOBES=[];
+const PCAT=['m','q','l','p','d'];
+(function(){
+ const RJ=190,RP=125,RE=185,TR=Math.PI/180;
+ const th=[0,1,2,3,4].map(k=>-90+72*k);
+ const pol=(r,d)=>[r*Math.cos(d*TR),r*Math.sin(d*TR)];
+ const raw=[],id={};
+ const add=(key,p,kind)=>{id[key]=raw.length;raw.push({x:p[0],y:p[1],kind:kind||'ring'})};
+ const J=th.map(t=>pol(RJ,t)),P=th.map(t=>pol(RP,t));
+ for(let k=0;k<5;k++){add('J'+k,J[k]);add('P'+k,P[k],'trophy')}
+ let pitch=0;
+ for(let k=0;k<5;k++){
+  const E=pol(RE,th[k]+36),Jn=J[(k+1)%5],A0=Math.atan2(J[k][1]-E[1],J[k][0]-E[0]),A1=Math.atan2(Jn[1]-E[1],Jn[0]-E[0]);
+  const rho=Math.hypot(J[k][0]-E[0],J[k][1]-E[1]),mid=(th[k]+36)*TR,TP=2*Math.PI;
+  const d=((A1-A0)%TP+TP)%TP,m=((mid-A0)%TP+TP)%TP;
+  const delta=m<d?d:d-TP;
+  LOBES.push({x:E[0],y:E[1],r:rho});
+  for(let i=1;i<=5;i++){const a=A0+delta*i/6;add('a'+k+'_'+i,[E[0]+rho*Math.cos(a),E[1]+rho*Math.sin(a)])}
+  pitch=2*rho*Math.sin(Math.abs(delta)/12);
+ }
+ const len=c=>{let s=0;for(let i=0;i<c.length-1;i++)s+=Math.hypot(c[i+1][0]-c[i][0],c[i+1][1]-c[i][1]);return s};
+ const bez=(A,B,h,dv)=>{const Q=[(A[0]+B[0])/2+dv[0]*h,(A[1]+B[1])/2+dv[1]*h],o=[];for(let i=0;i<=400;i++){const t=i/400;o.push([(1-t)*(1-t)*A[0]+2*(1-t)*t*Q[0]+t*t*B[0],(1-t)*(1-t)*A[1]+2*(1-t)*t*Q[1]+t*t*B[1]])}return o};
+ for(let k=0;k<5;k++){
+  const k2=(k+1)%5,A=[raw[id['a'+k+'_4']].x,raw[id['a'+k+'_4']].y],B=[raw[id['a'+k2+'_2']].x,raw[id['a'+k2+'_2']].y],dv=pol(1,th[k2]);
+  let lo=0,hi=400;for(let q=0;q<40;q++){const h=(lo+hi)/2;if(len(bez(A,B,h,dv))<4*pitch)lo=h;else hi=h}
+  const c=bez(A,B,(lo+hi)/2,dv),cum=[0];for(let i=0;i<400;i++)cum.push(cum[i]+Math.hypot(c[i+1][0]-c[i][0],c[i+1][1]-c[i][1]));
+  for(let j=1;j<=3;j++){const t=cum[400]*j/4;let ix=0;while(cum[ix]<t)ix++;add('b'+k+'_'+j,c[ix])}
+ }
+ let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+ raw.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y)});
+ const PAD=46;VW=Math.round(x1-x0+PAD*2);VH=Math.round(y1-y0+PAD*2);CX=PAD-x0;CY=PAD-y0;
+ raw.forEach((p,i)=>{NODES.push({id:i,x:+(p.x+CX).toFixed(1),y:+(p.y+CY).toFixed(1),kind:p.kind,cat:null});NB.push([])});
+ LOBES.forEach(l=>{l.x+=CX;l.y+=CY});
+ const edge=(a,b)=>{const i=id[a],j=id[b];NB[i].push(j);NB[j].push(i);EDGES.push([i,j])};
+ for(let k=0;k<5;k++){
+  const k2=(k+1)%5;edge('J'+k,'P'+k);
+  const ch=['J'+k,'a'+k+'_1','a'+k+'_2','a'+k+'_3','a'+k+'_4','a'+k+'_5','J'+k2];
+  for(let i=0;i<ch.length-1;i++)edge(ch[i],ch[i+1]);
+  const br=['a'+k+'_4','b'+k+'_1','b'+k+'_2','b'+k+'_3','a'+k2+'_2'];
+  for(let i=0;i<br.length-1;i++)edge(br[i],br[i+1]);
+  NODES[id['P'+k]].cat=PCAT[k];NODES[id['P'+k]].spur=k;
+  SP.push({junc:id['J'+k],nodes:[id['P'+k]],cat:PCAT[k]});
+ }
+ const SEQ={J:['d','m','q','l','p'],
+  a:[['l','m','F','p','l'],['p','q','F','d','p'],['d','l','F','m','d'],['m','p','F','q','m'],['q','d','F','l','q']],
+  b:[['d','F','d'],['m','F','m'],['q','F','q'],['l','F','l'],['p','F','p']]};
+ const setc=(key,c)=>{const n=NODES[id[key]];if(c==='F'){n.cat='free';n.kind='free'}else n.cat=c};
+ for(let k=0;k<5;k++){
+  setc('J'+k,SEQ.J[k]);
+  SEQ.a[k].forEach((c,i)=>setc('a'+k+'_'+(i+1),c));
+  SEQ.b[k].forEach((c,i)=>setc('b'+k+'_'+(i+1),c));
+ }
+ START=id['a2_3'];
+})();
+const pent=(x,y,r)=>[0,1,2,3,4].map(k=>{const a=(-90+72*k)*Math.PI/180;return (x+r*Math.cos(a)).toFixed(1)+','+(y+r*Math.sin(a)).toFixed(1)}).join(' ');
+function boardSVG(){
+ let e='',t='',em='';
+ EDGES.forEach(([a,b])=>{e+=`<line x1="${NODES[a].x}" y1="${NODES[a].y}" x2="${NODES[b].x}" y2="${NODES[b].y}"/>`});
+ LOBES.forEach((l,k)=>{em+=`<circle cx="${l.x.toFixed(1)}" cy="${l.y.toFixed(1)}" r="${(l.r-48).toFixed(1)}" fill="rgba(0,0,0,.28)" stroke="rgba(255,255,255,.08)" stroke-width="3"/><text x="${l.x.toFixed(1)}" y="${l.y.toFixed(1)}" font-size="64" text-anchor="middle" dominant-baseline="central" opacity=".28">${CATS[ORDER[(k+2)%5]].i}</text>`});
+ NODES.forEach(n=>{
+  const c=CATS[n.cat],tr=n.kind==='trophy';
+  if(tr)t+=`<polygon points="${pent(n.x,n.y,48)}" fill="rgba(255,210,63,.28)"/>`;
+  t+=`<polygon points="${pent(n.x,n.y,tr?40:31)}" fill="${c.c}" stroke="${tr?'#ffd23f':'#fff'}" stroke-width="${tr?5:3}" stroke-linejoin="round"/>`;
+  t+=`<text x="${n.x}" y="${n.y+1}" font-size="${tr?32:25}" text-anchor="middle" dominant-baseline="central">${c.i}</text>`;
+  if(tr)t+=`<text x="${n.x+30}" y="${n.y-32}" font-size="22" text-anchor="middle" dominant-baseline="central">🏆</text>`;
+ });
+ return `<g>${em}</g><circle cx="${CX}" cy="${CY}" r="46" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)" stroke-width="3"/>
+ <text x="${CX}" y="${CY}" font-size="40" text-anchor="middle" dominant-baseline="central">👫</text>
+ <g class="edges">${e}</g><g>${t}</g><g id="hl"></g><g id="tokens"></g>`;
+}
+
+/* ===================== UTILIDADES ===================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const rnd=n=>Math.floor(Math.random()*n);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim().replace(/^(el|la|los|las|un|una|unos|unas) /,'');
+const mem={};
+function sget(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}}
+function sset(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}
+function sdel(k){try{localStorage.removeItem(k)}catch(e){delete mem[k]}}
+const app=$('#app'),SHEET=$('#sheet'),MOD=$('#modal');
+let toastT;function toast(t){const el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>el.style.display='none',2600)}
+const genRoom=()=>{const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=a[rnd(a.length)];return s};
+
+/* ===================== AJUSTES / IDENTIDAD ===================== */
+const defTeams=n=>Array.from({length:n},(_,i)=>({name:'Equipo '+(i+1),e:EMOJIS[i],m:['Jugador '+(2*i+1),'Jugador '+(2*i+2)]}));
+let S={sound:true,vib:true,time:60,meta:5,dice2:false,mode:'online',tq:Object.keys(THQ),tw:Object.keys(THW),teams:null};
+try{const x=JSON.parse(sget('pf3_settings')||'null');if(x)S=Object.assign(S,x)}catch(e){}
+if(!Array.isArray(S.teams)||S.teams.length<2)S.teams=defTeams(3);
+S.tq=(S.tq||[]).filter(k=>THQ[k]);if(!S.tq.length)S.tq=Object.keys(THQ);
+S.tw=(S.tw||[]).filter(k=>THW[k]);if(!S.tw.length)S.tw=Object.keys(THW);
+const saveS=()=>sset('pf3_settings',JSON.stringify(S));
+const ME={id:sget('pf3_dev')||('d'+Math.random().toString(36).slice(2,10)),host:false};
+sset('pf3_dev',ME.id);
+let G=null,screen='home',OFF=0,PRIV=null,winHidden=false;
+const H={used:loadUsed(),sec:{},timer:null,chooseRes:null,busy:false};
+
+/* ===================== SONIDO ===================== */
+let AC;
+function ac(){if(!S.sound)return null;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+function tone(f,d=.12,type='sine',v=.15,delay=0){const a=ac();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;const t=a.currentTime+delay;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02)}
+const sfx={tick:()=>tone(520,.06,'square',.05),roll:()=>[0,1,2,3,4].forEach(i=>tone(300+i*40,.05,'square',.05,i*.08)),
+ ok:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.14,'triangle',.18,i*.09)),bad:()=>{tone(220,.2,'sawtooth',.12);tone(165,.3,'sawtooth',.12,.15)},
+ beep:()=>tone(880,.1,'square',.1),go:()=>[660,880].forEach((f,i)=>tone(f,.12,'triangle',.18,i*.1)),buzz:()=>{tone(180,.7,'sawtooth',.22);tone(140,.7,'square',.12,.05)},win:()=>[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.2,'triangle',.2,i*.12))};
+const vib=p=>{if(S.vib&&navigator.vibrate)try{navigator.vibrate(p)}catch(e){}};
+function confetti(){const em=['🎉','🎊','⭐','🏆','✨','🎈'];for(let i=0;i<40;i++){const s=document.createElement('span');s.className='cf';s.textContent=em[rnd(em.length)];s.style.left=rnd(100)+'vw';s.style.animationDuration=(2+Math.random()*2.5)+'s';s.style.animationDelay=Math.random()+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),6000)}}
+async function wake(){try{if(navigator.wakeLock)await navigator.wakeLock.request('screen')}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&screen==='game')wake()});
+
+/* ===================== RED: cliente MQTT mínimo sobre WebSocket ===================== */
+const BROKERS=(()=>{let q=null;try{q=new URLSearchParams(location.search).get('broker')}catch(e){}return q?[q]:['wss://broker.hivemq.com:8884/mqtt','wss://broker.emqx.io:8084/mqtt']})();
+function MQ(urls,cid,cb){
+ const enc=new TextEncoder(),dec=new TextDecoder();
+ let ws=null,buf=new Uint8Array(0),ui=0,closed=false,ping=null,conT=null,rt=null,subs=[],ok=false,pid=0;
+ const str=s=>{const b=enc.encode(s);const o=new Uint8Array(2+b.length);o[0]=b.length>>8;o[1]=b.length&255;o.set(b,2);return o};
+ const cat=(...a)=>{const n=a.reduce((s,x)=>s+x.length,0);const o=new Uint8Array(n);let p=0;a.forEach(x=>{o.set(x,p);p+=x.length});return o};
+ const vl=n=>{const o=[];do{let d=n%128;n=Math.floor(n/128);if(n>0)d|=128;o.push(d)}while(n>0);return Uint8Array.from(o)};
+ const pkt=(h,body)=>cat(Uint8Array.of(h),vl(body.length),body);
+ const send=u=>{try{if(ws&&ws.readyState===1){ws.send(u);return true}}catch(e){}return false};
+ function sendSub(list){pid=(pid%65534)+1;send(pkt(0x82,cat(Uint8Array.of(pid>>8,pid&255),...list.map(t=>cat(str(t),Uint8Array.of(0))))))}
+ function handle(h,b){
+  const t=h>>4;
+  if(t===2){
+   if(b[1]===0){ok=true;clearTimeout(conT);clearInterval(ping);ping=setInterval(()=>send(Uint8Array.of(0xC0,0)),20000);if(subs.length)sendSub(subs);cb.status&&cb.status(true,urls[ui%urls.length])}
+   else{try{ws.close()}catch(e){}}
+  }else if(t===3){
+   const qos=(h>>1)&3;const tl=(b[0]<<8)|b[1];const topic=dec.decode(b.slice(2,2+tl));let off=2+tl;
+   if(qos>0){const id=(b[off]<<8)|b[off+1];off+=2;send(Uint8Array.of(0x40,2,id>>8,id&255))}
+   cb.msg&&cb.msg(topic,dec.decode(b.slice(off)));
+  }
+ }
+ function parse(){
+  for(;;){
+   if(buf.length<2)return;
+   let rl=0,m=1,i=1,x;
+   for(;;){if(i>=buf.length)return;x=buf[i++];rl+=(x&127)*m;m*=128;if(!(x&128))break;if(i>5){try{ws.close()}catch(e){}return}}
+   if(buf.length<i+rl)return;
+   const h=buf[0],body=buf.slice(i,i+rl);buf=buf.slice(i+rl);handle(h,body);
+  }
+ }
+ function open(){
+  if(closed)return;
+  const url=urls[ui%urls.length];
+  try{ws=new WebSocket(url,'mqtt')}catch(e){ui++;rt=setTimeout(open,1500);return}
+  const mine=ws;ws.binaryType='arraybuffer';buf=new Uint8Array(0);ok=false;
+  conT=setTimeout(()=>{try{mine.close()}catch(e){}},7000);
+  ws.onopen=()=>send(pkt(0x10,cat(str('MQTT'),Uint8Array.of(4,2,0,30),str(cid))));
+  ws.onmessage=e=>{if(mine!==ws)return;buf=cat(buf,new Uint8Array(e.data));parse()};
+  ws.onclose=()=>{if(mine!==ws)return;clearTimeout(conT);clearInterval(ping);const was=ok;ok=false;cb.status&&cb.status(false);if(!closed){if(!was)ui++;rt=setTimeout(open,was?800:1500)}};
+  ws.onerror=()=>{};
+ }
+ open();
+ return{
+  sub(topics){topics.forEach(t=>{if(!subs.includes(t))subs.push(t)});if(ok)sendSub(topics)},
+  pub(topic,payload,retain){if(!ok)return false;return send(pkt(0x30|(retain?1:0),cat(str(topic),enc.encode(payload))))},
+  get ok(){return ok},
+  close(){closed=true;clearTimeout(rt);clearTimeout(conT);clearInterval(ping);try{ws&&ws.close()}catch(e){}}
+ };
+}
+const NET={mq:null,room:null,up:false,
+ start(room){
+  this.stop();this.room=room;
+  const cid='pf'+ME.id+'_'+Math.random().toString(36).slice(2,6);
+  this.mq=MQ(BROKERS,cid,{
+   status:(up)=>{NET.up=up;paintNet();if(up&&ME.host&&G&&G.room===NET.room)NET.pub('s',JSON.stringify(G),true);if(up&&!ME.host)intent({t:'hello'})},
+   msg:(t,p)=>NET.onMsg(t,p)});
+  this.mq.sub([`pfam1/${room}/s`,`pfam1/${room}/h`,`pfam1/${room}/d`,`pfam1/${room}/p/${ME.id}`]);
+ },
+ stop(){if(this.mq)this.mq.close();this.mq=null;this.up=false;this.room=null;paintNet()},
+ pub(sub,payload,retain){return this.mq?this.mq.pub(`pfam1/${this.room}/${sub}`,payload,retain):false},
+ onMsg(topic,payload){
+  const sub=topic.split('/').slice(2).join('/');let m=null;
+  if(sub==='s'){
+   if(!payload)return;try{m=JSON.parse(payload)}catch(e){return}onSnapshot(m);return;
+  }
+  try{m=JSON.parse(payload)}catch(e){return}
+  if(sub==='h'){if(ME.host&&G&&m.from!==ME.id)hostHandle(m,m.from)}
+  else if(sub==='d'){onDraw(m)}
+  else if(sub.startsWith('p/')){handlePriv(m)}
+ }};
+function paintNet(){const el=$('#net');if(el)el.innerHTML=netHTML()}
+function netHTML(){
+ if(!G||!G.room)return '';
+ return `<span class="dot ${NET.up?'on':''}"></span>${NET.up?'Online':'Conectando…'}`;
+}
+
+/* ===================== ESTADO COMPARTIDO ===================== */
+function validGame(g){
+ try{return !!(g&&g.v===3&&Array.isArray(g.teams)&&g.teams.length>=2&&g.set&&g.claims&&typeof g.ph==='string'&&g.teams.every(t=>t.node>=0&&t.node<NODES.length&&Array.isArray(t.m)&&Array.isArray(t.tro))&&g.turn>=0&&g.turn<g.teams.length)}catch(e){return false}
+}
+function normalizeG(g){
+ if(g.ph!=='lobby'&&g.ph!=='win'){g.ph='roll';g.mv=null;g.tr=null;g.ev=null;g.die=null;g.msg='Partida reanudada. Turno de '+g.teams[g.turn].name}
+ return g;
+}
+function hostSave(){try{sset('pf3_host',JSON.stringify({G,used:H.used}))}catch(e){}}
+function loadHostSave(){try{const x=JSON.parse(sget('pf3_host')||'null');if(x&&validGame(x.G))return x}catch(e){}return null}
+function commit(){
+ G.rev=(G.rev||0)+1;G.ts=Date.now();OFF=0;hostSave();
+ if(G.room)NET.pub('s',JSON.stringify(G),true);
+ route();
+}
+function onSnapshot(m){
+ if(!validGame(m))return;
+ if(ME.host&&G){
+  if(m.host===ME.id)return;            // eco de mi propio estado
+  if(m.room===G.room&&(m.rev||0)>(G.rev||0)){ME.host=false;toast('Otro dispositivo ha tomado el control');G=m;OFF=m.ts-Date.now();route();return}
+  return;
+ }
+ if(G&&m.room===G.room&&m.host===G.host&&(m.rev||0)<=(G.rev||0))return;
+ G=m;OFF=m.ts-Date.now();
+ sset('pf3_sess',JSON.stringify({room:G.room,host:false}));
+ route();
+}
+function handlePriv(m){
+ if(m.k==='word'){PRIV=m;route()}
+ else if(m.k==='toast')toast(m.text);
+}
+function privateTo(id,msg){if(id===ME.id)handlePriv(msg);else NET.pub('p/'+id,JSON.stringify(msg))}
+
+/* ---- asientos / permisos ---- */
+const seatKey=(ti,mi)=>ti+':'+mi;
+function claimant(ti,mi){const k=seatKey(ti,mi);for(const d in G.claims)if(G.claims[d].includes(k))return d;return null}
+function mineSeat(ti,mi){const c=claimant(ti,mi);return c?c===ME.id:ME.host}
+function teamMine(ti){return ME.host||G.teams[ti].m.some((_,i)=>claimant(ti,i)===ME.id)}
+function deviceOfSeat(ti,mi){return claimant(ti,mi)||G.host}
+function allowTeam(from,ti){return from===G.host||G.teams[ti].m.some((_,i)=>claimant(ti,i)===from)}
+function isPerf(from,tr){const c=claimant(tr.ti,tr.perfMi);return c?c===from:from===G.host}
+function isMate(from,tr){return G.teams[tr.ti].m.some((_,i)=>i!==tr.perfMi&&claimant(tr.ti,i)===from)}
+const tIdx=k=>+String(k).split(':')[0];
+function rivalDevs(ti){return Object.keys(G.claims).filter(d=>G.claims[d].some(k=>tIdx(k)!==ti)&&!G.claims[d].some(k=>tIdx(k)===ti))}
+function isRival(d,ti){const r=rivalDevs(ti);return r.includes(d)||(d===G.host&&r.length===0)}
+function hasRival(ti){return rivalDevs(ti).length>0}
+function rivalMe(ti){return isRival(ME.id,ti)}
+function claimWin(from){const tr=G.tr;if(isRival(from,tr.ti)||!hasRival(tr.ti))endTrial(true);else{clearTimeout(H.timer);tr.step='verify';commit()}}
+function mySeatsText(){
+ if(!G)return '';
+ const out=[];G.teams.forEach((t,ti)=>t.m.forEach((m,mi)=>{if(claimant(ti,mi)===ME.id)out.push(m)}));
+ if(out.length)return '🙋 '+out.join(', ');
+ return ME.host?'👑 Anfitrión':'👀 Sin asiento';
+}
+
+/* ---- mazos (solo anfitrión) ---- */
+const DECK={q:QUIZ,w:WORDS,s:SND,p:TABU,l:LABIOS,r:DRAW};
+/* historial de elementos ya usados: persistente entre partidas (pf3_used) */
+function loadUsed(){const e={q:[],w:[],s:[],p:[],l:[],r:[]};try{const x=JSON.parse(sget('pf3_used')||'null');if(x)for(const k in e)if(Array.isArray(x[k]))e[k]=x[k].filter(v=>typeof v==='string')}catch(err){}return e}
+function saveUsed(){try{sset('pf3_used',JSON.stringify(H.used))}catch(e){}}
+function mergeUsed(u){if(!u)return;for(const k in H.used)if(Array.isArray(u[k]))u[k].forEach(v=>{if(typeof v==='string'&&!H.used[k].includes(v))H.used[k].push(v)});saveUsed()}
+function hid(d,it){const s=d==='q'?it[1]:d==='w'?it[0]+it[1]:d==='p'?it[0]:it;let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)}
+function pool(deck){
+ if(deck==='q')return QUIZ.map((x,i)=>G.set.tq.includes(x[0])?i:-1).filter(i=>i>=0);
+ if(deck==='w')return WORDS.map((x,i)=>G.set.tw.includes(x[0])?i:-1).filter(i=>i>=0);
+ return DECK[deck].map((_,i)=>i);
+}
+function draw(deck){
+ const D=DECK[deck];let pl=pool(deck);if(!pl.length)pl=D.map((_,i)=>i);
+ let used=H.used[deck]||(H.used[deck]=[]);
+ const seen=new Set(used);
+ let av=pl.filter(i=>!seen.has(hid(deck,D[i])));
+ if(!av.length){const ids=new Set(pl.map(i=>hid(deck,D[i])));used=H.used[deck]=used.filter(x=>!ids.has(x));av=pl}
+ const i=av[rnd(av.length)];used.push(hid(deck,D[i]));saveUsed();return D[i];
+}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+/* ¿la respuesta escrita coincide con la correcta o con algún alias? */
+function qmatch(inp,ans,al){
+ const x=norm(inp);if(!x)return false;
+ const xt=x.split(' ');
+ for(const raw of [ans].concat(al||[])){
+  const c=norm(raw);if(!c)continue;
+  if(x===c)return true;
+  const ct=c.split(' ');
+  if(xt.length<=ct.length+4)for(let i=0;i+ct.length<=xt.length;i++)if(xt.slice(i,i+ct.length).join(' ')===c)return true;
+  if(c.length>=5&&/^[a-z ]+$/.test(c)&&Math.abs(x.length-c.length)<=2&&lev(x,c)<=(c.length>=9?2:1))return true;
+ }
+ return false;
+}
+
+/* ===================== MOTOR DEL ANFITRIÓN ===================== */
+function newGameState(room){
+ const teams=S.teams.map((t,i)=>({name:(t.name||'').trim()||('Equipo '+(i+1)),e:t.e,col:COLORS[i%COLORS.length],m:t.m.map((x,k)=>(x||'').trim()||('Jugador '+(i*2+k+1))),perf:0,node:START,tro:[]}));
+ return{v:3,room:room||null,host:ME.id,rev:0,ts:Date.now(),teams,turn:0,winner:null,
+  set:{time:S.time,meta:S.meta,dice2:S.dice2,tq:S.tq.length?S.tq.slice():Object.keys(THQ),tw:S.tw.length?S.tw.slice():Object.keys(THW)},
+  claims:{},ph:room?'lobby':'roll',die:null,mv:null,tr:null,ev:null,msg:'',tseq:0};
+}
+function hostHandle(m,from){
+ if(!G||!ME.host)return;
+ const ph=G.ph,tr=G.tr;
+ switch(m.t){
+  case 'hello':if(G.room)NET.pub('s',JSON.stringify(G),true);break;
+  case 'claim':{
+   const mt=/^(\d+):(\d+)$/.exec(m.s||'');if(!mt)break;const ti=+mt[1],mi=+mt[2];
+   if(!G.teams[ti]||G.teams[ti].m[mi]===undefined)break;
+   const c=claimant(ti,mi);if(c&&c!==from){privateTo(from,{k:'toast',text:'Ese asiento ya está ocupado'});break}
+   (G.claims[from]=G.claims[from]||[]);if(!G.claims[from].includes(m.s))G.claims[from].push(m.s);commit();break}
+  case 'unclaim':{
+   if(G.claims[from]){G.claims[from]=G.claims[from].filter(x=>x!==m.s);if(!G.claims[from].length)delete G.claims[from];commit()}break}
+  case 'roll':if(ph==='roll'&&allowTeam(from,G.turn))doRoll();break;
+  case 'choose':if(ph==='move'&&G.mv&&G.mv.opts&&allowTeam(from,G.mv.ti)&&G.mv.opts.includes(+m.n)&&H.chooseRes){const r=H.chooseRes;H.chooseRes=null;r(+m.n)}break;
+  case 'pass':if(ph==='roll'&&allowTeam(from,G.turn)){G.msg='';nextTurn()}break;
+  case 'needword':if(ph==='trial'&&tr&&tr.id===m.id&&H.sec.word!==undefined&&(deviceOfSeat(tr.ti,tr.perfMi)===from||isRival(from,tr.ti)))sendWord();break;
+  case 'tword':if(ph==='trial'&&tr&&tr.step==='intro'&&(isPerf(from,tr)||from===G.host)){tr.step='word';commit()}break;
+  case 'tchange':if(ph==='trial'&&tr&&tr.step==='word'&&!tr.changed&&(isPerf(from,tr)||from===G.host)){drawSecret(tr,true);tr.changed=true;commit();sendWord()}break;
+  case 'tgo':if(ph==='trial'&&tr&&tr.step==='word'&&(isPerf(from,tr)||from===G.host)){
+   tr.step='play';tr.endAt=Date.now()+G.set.time*1000;commit();
+   clearTimeout(H.timer);const id=tr.id;H.timer=setTimeout(()=>{if(G.tr&&G.tr.id===id)endTrial(false,'time')},G.set.time*1000+400)}break;
+  case 'tgood':if(ph==='trial'&&tr&&tr.step==='play'&&tr.cat!=='q'&&(isPerf(from,tr)||from===G.host||isRival(from,tr.ti)))claimWin(from);break;
+  case 'tvok':if(ph==='trial'&&tr&&tr.step==='verify'&&isRival(from,tr.ti))endTrial(true);break;
+  case 'tvno':if(ph==='trial'&&tr&&tr.step==='verify'&&isRival(from,tr.ti))endTrial(false,'cheat');break;
+  case 'hskip':if(ph==='trial'&&tr&&tr.step!=='result'&&from===G.host)endTrial(false,'skip');break;
+  case 'tgive':if(ph==='trial'&&tr&&tr.step==='play'&&(tr.cat==='q'?allowTeam(from,tr.ti):(isPerf(from,tr)||from===G.host)))endTrial(false,'give');break;
+  case 'ttabu':if(ph==='trial'&&tr&&tr.step==='play'&&tr.cat!=='q'&&isRival(from,tr.ti))endTrial(false,tr.cat==='p'?'tabu':'cheat');break;
+  case 'guess':if(ph==='trial'&&tr&&tr.step==='play'&&tr.cat!=='q'&&isMate(from,tr)){
+   if(norm(m.x)&&norm(m.x)===norm(H.sec.word))claimWin(from);else privateTo(from,{k:'toast',text:'❌ Esa no es, ¡sigue probando!'})}break;
+  case 'qstart':if(ph==='trial'&&tr&&tr.cat==='q'&&tr.step==='ready'&&isRival(from,tr.ti)){
+   tr.step='play';tr.endAt=Date.now()+G.set.time*1000;commit();
+   clearTimeout(H.timer);const id=tr.id;H.timer=setTimeout(()=>{if(G.tr&&G.tr.id===id)endTrial(false,'time')},G.set.time*1000+400)}break;
+  case 'qstop':if(ph==='trial'&&tr&&tr.cat==='q'&&tr.step==='play'&&(allowTeam(from,tr.ti)||isRival(from,tr.ti))){
+   clearTimeout(H.timer);tr.step='judge';commit()}break;
+  case 'qok':if(ph==='trial'&&tr&&tr.cat==='q'&&tr.step==='judge'&&isRival(from,tr.ti))endTrial(true);break;
+  case 'qno':if(ph==='trial'&&tr&&tr.cat==='q'&&tr.step==='judge'&&isRival(from,tr.ti))endTrial(false,'wrong');break;
+  case 'tnext':if(ph==='trial'&&tr&&tr.step==='result'&&allowTeam(from,tr.ti))proceed();break;
+  case 'rematch':if(from===G.host)rematch();break;
+ }
+}
+async function doRoll(){
+ if(H.busy)return;H.busy=true;
+ try{
+  const ti=G.turn;G.ph='rolling';G.die=null;G.msg='';commit();await sleep(900);
+  const n=G.set.dice2?2:1;const v=Array.from({length:n},()=>1+rnd(6));const tot=v.reduce((a,b)=>a+b,0);
+  G.die=v;G.ph='move';G.mv={ti,left:tot,cur:G.teams[ti].node,prev:null,opts:null};G.msg='Sacó '+tot;commit();await sleep(450);
+  await stepLoop();
+ }catch(e){console.error(e)}finally{H.busy=false}
+}
+async function stepLoop(){
+ const mv=G.mv,ti=mv.ti,t=G.teams[ti];
+ while(mv.left>0){
+  let opts=NB[mv.cur].filter(n=>n!==mv.prev);
+  if(!opts.length)opts=NB[mv.cur].slice();
+  if(NODES[mv.cur].kind==='spur'&&mv.prev!==null&&!opts.includes(mv.prev))opts.push(mv.prev);
+  let next;
+  if(opts.length===1)next=opts[0];
+  else{mv.opts=opts;commit();next=await new Promise(r=>{H.chooseRes=r});mv.opts=null}
+  mv.prev=mv.cur;mv.cur=next;t.node=next;mv.left--;commit();await sleep(240);
+  if(NODES[next].kind==='trophy'&&!t.tro.includes(NODES[next].cat))break;
+ }
+ G.mv=null;
+ landing(ti);
+}
+function landing(ti){
+ const t=G.teams[ti],node=NODES[t.node];
+ if(node.kind==='free'){G.ph='roll';G.msg='🎲 Tirada libre: ¡tirad otra vez!';commit();return}
+ if(node.kind==='start'){G.ph='roll';G.msg='Casilla de salida: ¡tirad otra vez!';commit();return}
+ beginTrial(ti,node.cat,node.kind==='trophy'&&!t.tro.includes(node.cat));
+}
+function drawSecret(tr,keep){
+ const cat=tr.cat;let dk;
+ if(cat==='m'){if(!keep)tr.mode=Math.random()<.5?'mime':'sound';dk=tr.mode==='sound'?'s':'w';tr.label=tr.mode==='sound'?'Sonidos':'Mímica';tr.icon=tr.mode==='sound'?'🔊':'🎭'}
+ else dk=cat==='p'?'p':cat==='l'?'l':cat==='d'?'r':'w';
+ const it=draw(dk);
+ H.sec.word=dk==='s'||dk==='l'||dk==='r'?it:dk==='p'?it[0]:it[1];
+ H.sec.forb=dk==='p'?it[1]:null;
+}
+function beginTrial(ti,cat,fin){
+ const t=G.teams[ti];const id=(G.tseq=(G.tseq||0)+1);
+ const tr={id,ti,cat,fin,step:'intro',perfMi:t.perf%t.m.length,mode:null,label:CATS[cat].n,icon:CATS[cat].i,changed:false,endAt:0};
+ H.sec={};
+ if(cat==='q'){const it=draw('q');tr.q={th:it[0],text:it[1],ans:it[2]};
+  tr.step='ready'}
+ else drawSecret(tr,false);
+ G.tr=tr;G.ph='trial';G.msg='';commit();
+ if(cat!=='q')sendWord();
+}
+function sendWord(){
+ const tr=G.tr;if(!tr)return;
+ const to=new Set([deviceOfSeat(tr.ti,tr.perfMi)]);const r=rivalDevs(tr.ti);(r.length?r:[G.host]).forEach(d=>to.add(d));
+ to.forEach(d=>privateTo(d,{k:'word',id:tr.id,word:H.sec.word,forb:H.sec.forb}));
+}
+function endTrial(ok,why){
+ const tr=G.tr;if(!tr||tr.step==='result')return;
+ clearTimeout(H.timer);
+ tr.step='result';tr.ok=!!ok;tr.why=why||'';
+ if(tr.cat!=='q'){tr.word=H.sec.word;G.teams[tr.ti].perf++}else tr.ans=tr.q.ans;
+ commit();
+}
+async function returnFromTrophy(ti,node){
+ const t=G.teams[ti],sp=SP[node.spur];
+ G.ph='ret';G.msg='Volviendo al anillo…';commit();
+ t.node=sp.junc;commit();await sleep(250);
+}
+async function proceed(){
+ if(H.busy)return;H.busy=true;
+ try{
+  const tr=G.tr,ti=tr.ti,t=G.teams[ti],node=NODES[t.node];
+  G.tr=null;
+  if(tr.fin&&tr.ok){
+   t.tro.push(tr.cat);G.ph='trophy';G.ev={id:tr.id,ti,cat:tr.cat};commit();await sleep(4200);G.ev=null;
+   if(t.tro.length>=G.set.meta){await returnFromTrophy(ti,node);G.ph='win';G.winner=ti;winHidden=false;commit();return}
+  }
+  if(node.kind==='trophy')await returnFromTrophy(ti,node);
+  if(tr.ok){G.ph='roll';G.msg='¡Seguís! Tirad otra vez';commit()}
+  else nextTurn();
+ }catch(e){console.error(e)}finally{H.busy=false}
+}
+function nextTurn(){
+ G.turn=(G.turn+1)%G.teams.length;G.ph='roll';G.tr=null;G.mv=null;G.ev=null;
+ G.msg='Turno de '+G.teams[G.turn].name;commit();
+}
+function rematch(){
+ G.teams.forEach(t=>{t.node=START;t.tro=[];t.perf=0});G.turn=0;G.winner=null;G.ph='roll';G.tr=null;G.mv=null;G.ev=null;G.die=null;winHidden=false;
+ G.msg='¡Empezamos de nuevo! Turno de '+G.teams[0].name;commit();
+}
+function intent(m){
+ if(!G&&m.t!=='hello')return;
+ if(ME.host&&G)hostHandle(m,ME.id);
+ else if(NET.mq){if(!NET.pub('h',JSON.stringify(Object.assign({from:ME.id},m))))toast('Sin conexión… reintenta en un momento')}
+}
+
+/* ===================== DIBUJO EN VIVO ===================== */
+let CV=null,drawBuf=[],drawTimer=null;
+function redrawAll(c){
+ const {ctx,w,h}=c;ctx.clearRect(0,0,w,h);
+ for(const s of c.strokes){ctx.strokeStyle=s.c;ctx.lineWidth=s.w*w;ctx.beginPath();s.p.forEach(([x,y],i)=>i?ctx.lineTo(x*w,y*h):ctx.moveTo(x*w,y*h));if(s.p.length===1)ctx.lineTo(s.p[0][0]*w+.01,s.p[0][1]*h);ctx.stroke()}
+}
+function setupCanvas(){
+ const cv=$('#cv');if(!cv)return null;
+ const w=cv.clientWidth||300,h=Math.round(w*.72);cv.style.height=h+'px';
+ const dpr=window.devicePixelRatio||1;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+ const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineCap='round';ctx.lineJoin='round';
+ return {cv,ctx,w,h,strokes:[],cur:null};
+}
+function flushDraw(){
+ if(!drawBuf.length||!G||!G.tr)return;
+ if(G.room)NET.pub('d',JSON.stringify({from:ME.id,id:G.tr.id,ops:drawBuf}));
+ drawBuf=[];
+}
+function queueDraw(op){drawBuf.push(op);if(!drawTimer)drawTimer=setTimeout(()=>{drawTimer=null;flushDraw()},90)}
+function initPerfCanvas(){
+ const c=setupCanvas();if(!c)return;CV=c;
+ let color='#111111';const SIZE=5/ c.w;
+ const pos=e=>{const b=c.cv.getBoundingClientRect();return[(e.clientX-b.left)/b.width,(e.clientY-b.top)/b.height]};
+ c.cv.onpointerdown=e=>{e.preventDefault();try{c.cv.setPointerCapture(e.pointerId)}catch(_){}
+  const p=pos(e),w=color==='#ffffff'?22/c.w:SIZE;c.cur={c:color,w,p:[p]};c.strokes.push(c.cur);redrawAll(c);queueDraw(['b',color,+w.toFixed(4),+p[0].toFixed(4),+p[1].toFixed(4)])};
+ c.cv.onpointermove=e=>{if(!c.cur)return;const a=c.cur.p[c.cur.p.length-1],b=pos(e);c.cur.p.push(b);
+  c.ctx.strokeStyle=c.cur.c;c.ctx.lineWidth=c.cur.w*c.w;c.ctx.beginPath();c.ctx.moveTo(a[0]*c.w,a[1]*c.h);c.ctx.lineTo(b[0]*c.w,b[1]*c.h);c.ctx.stroke();
+  queueDraw(['p',+b[0].toFixed(4),+b[1].toFixed(4)])};
+ const up=()=>{c.cur=null;flushDraw()};c.cv.onpointerup=up;c.cv.onpointercancel=up;
+ SHEET.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{color=b.dataset.c;SHEET.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
+ const u=$('#undo'),x=$('#clr');
+ if(u)u.onclick=()=>{c.strokes.pop();redrawAll(c);queueDraw(['u'])};
+ if(x)x.onclick=()=>{c.strokes=[];redrawAll(c);queueDraw(['x'])};
+}
+function initViewCanvas(){const c=setupCanvas();if(c)CV=c}
+function onDraw(m){
+ if(!G||!G.tr||m.id!==G.tr.id||m.from===ME.id||!CV||CV.cv!==$('#cv'))return;
+ for(const op of m.ops||[]){
+  if(op[0]==='b'){CV.cur={c:op[1],w:op[2],p:[[op[3],op[4]]]};CV.strokes.push(CV.cur);redrawAll(CV)}
+  else if(op[0]==='p'&&CV.cur){const a=CV.cur.p[CV.cur.p.length-1];CV.cur.p.push([op[1],op[2]]);
+   CV.ctx.strokeStyle=CV.cur.c;CV.ctx.lineWidth=CV.cur.w*CV.w;CV.ctx.beginPath();CV.ctx.moveTo(a[0]*CV.w,a[1]*CV.h);CV.ctx.lineTo(op[1]*CV.w,op[2]*CV.h);CV.ctx.stroke()}
+  else if(op[0]==='u'){CV.strokes.pop();CV.cur=null;redrawAll(CV)}
+  else if(op[0]==='x'){CV.strokes=[];CV.cur=null;redrawAll(CV)}
+ }
+}
+
+/* ===================== PANTALLAS ===================== */
+function topBar(left,title){return `<div class="top"><span>${left}</span><b>${title}</b><span id="net" class="mini">${netHTML()}</span></div>`}
+function renderHome(){
+ screen='home';app.className='';closeSheet();
+ const hs=loadHostSave();let sess=null;try{sess=JSON.parse(sget('pf3_sess')||'null')}catch(e){}
+ app.innerHTML=`<div class="hero"><div class="logo">🎉</div><h1>Party Familiar</h1><p>Juego de tablero por parejas · 5 pruebas · trofeos</p></div>
+ ${hs?`<div class="card"><b>Partida guardada</b><br>${hs.G.teams.length} equipos · turno de ${esc(hs.G.teams[hs.G.turn].e+' '+hs.G.teams[hs.G.turn].name)}${hs.G.room?` · sala ${hs.G.room}`:''}<button class="btn" data-act="continue">▶️ Continuar como anfitrión</button></div>`:''}
+ ${(()=>{let pv=null;try{pv=JSON.parse(sget('pf3_prev')||'null')}catch(e){}return pv&&validGame(pv.G)?`<div class="card"><b>Partida anterior</b><br><span class="mini">${pv.G.teams.map(t=>esc(t.e+' '+t.name)+' 🏆'+t.tro.length).join(' · ')}</span><button class="btn sec sm" data-act="restoreprev">↩️ Recuperar esa partida</button></div>`:''})()}
+ ${sess&&!sess.host&&sess.room?`<div class="card"><b>Sala ${esc(sess.room)}</b><button class="btn" data-act="rejoin">🔄 Volver a la sala</button></div>`:''}
+ <button class="btn" data-act="new">🆕 Nueva partida</button>
+ <button class="btn sec" data-act="joinscr">🔗 Unirme a una sala (tengo un código)</button>
+ <button class="btn sec" data-act="loadfile">📂 Cargar partida (archivo JSON)</button>
+ <button class="btn sec" data-act="dice">🎲 Dados libres</button>
+ <button class="btn sec" data-act="rules">📖 Cómo se juega</button>
+ <p class="foot">Se puede jugar con un solo móvil o cada uno en el suyo, con el mismo enlace.</p>`;
+}
+function renderSetup(){
+ screen='setup';app.className='';closeSheet();
+ const chips=(map,sel,act)=>Object.keys(map).map(k=>`<button class="chip ${sel.includes(k)?'on':''}" data-act="${act}" data-k="${k}">${map[k]}</button>`).join('');
+ app.innerHTML=`<div class="top"><button class="ib" data-act="home">←</button><b>Nueva partida</b><span></span></div>
+ <div class="card"><h3>📡 ¿Cómo se juega?</h3>
+  <button class="chip ${S.mode==='online'?'on':''}" data-act="mode" data-n="online">🌐 Cada uno en su móvil</button>
+  <button class="chip ${S.mode==='local'?'on':''}" data-act="mode" data-n="local">📱 Un solo móvil</button>
+  <p class="mini">${S.mode==='online'?'Se crea una sala con un código y un enlace. Cada jugador abre el enlace en su móvil y elige su sitio.':'Un único dispositivo que va pasando entre los equipos.'}</p></div>
+ <h3>👫 Equipos (${S.teams.length}) · cada equipo es una pareja</h3>
+ ${S.teams.map((t,i)=>`<div class="card"><div class="prow"><button class="em" data-act="emoji" data-i="${i}">${t.e}</button><input data-ti="${i}" value="${esc(t.name)}" maxlength="16" placeholder="Nombre del equipo"><button class="ib" data-act="del" data-i="${i}">✕</button></div>
+ ${t.m.map((m,k)=>`<div class="prow"><span>👤</span><input data-ti="${i}" data-mi="${k}" value="${esc(m)}" maxlength="14" placeholder="Jugador"></div>`).join('')}
+ <button class="btn sec sm" data-act="third" data-i="${i}">${t.m.length>2?'➖ Quitar 3.er jugador':'➕ 3.er jugador'}</button></div>`).join('')}
+ <button class="btn sec" data-act="add">➕ Añadir equipo</button>
+ <button class="btn sec" data-act="shuf">🔀 Mezclar orden de equipos</button>
+ <div class="card"><h3>🏆 Trofeos para ganar</h3>${[3,4,5].map(n=>`<button class="chip ${S.meta===n?'on':''}" data-act="meta" data-n="${n}">${n}</button>`).join('')}
+ <h3>⏱️ Tiempo en las pruebas</h3>${[30,45,60,90,120].map(n=>`<button class="chip ${S.time===n?'on':''}" data-act="time" data-n="${n}">${n} s</button>`).join('')}
+ <h3>🎲 Dados</h3><button class="chip ${!S.dice2?'on':''}" data-act="d2" data-n="0">1 dado</button><button class="chip ${S.dice2?'on':''}" data-act="d2" data-n="1">2 dados</button></div>
+ <div class="card"><h3>❓ Temáticas de las preguntas</h3>${chips(THQ,S.tq,'tq')}<h3>🎭 Temáticas de mímica</h3>${chips(THW,S.tw,'tw')}</div>
+ <button class="btn" data-act="start">${S.mode==='online'?'🌐 Crear sala':'🚀 ¡A jugar!'}</button>`;
+}
+function renderJoin(code,msg){
+ screen='join';app.className='';closeSheet();
+ app.innerHTML=`<div class="top"><button class="ib" data-act="home">←</button><b>Unirme a una sala</b><span></span></div>
+ <div class="card"><p>Escribe el código de 6 letras que te ha dado el anfitrión, o abre el enlace que te ha enviado.</p>
+ <div class="gin"><input id="jcode" maxlength="6" value="${esc(code||'')}" placeholder="ABC123" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:4px;font-weight:800;text-align:center"><button data-act="join">Entrar</button></div>
+ ${msg?`<p>${msg}</p>`:''}</div>`;
+}
+function renderLobby(){
+ screen='lobby';app.className='';closeSheet();
+ const link=location.href.split('#')[0]+'#sala='+G.room;
+ app.innerHTML=`${topBar('<button class="ib" data-act="leave">←</button>','🌐 Sala')}
+ <div class="card" style="text-align:center"><div class="mini">Código de la sala</div><div class="code">${esc(G.room)}</div>
+ <button class="btn sec sm" data-act="copylink">🔗 Copiar enlace</button><button class="btn sec sm" data-act="copycode">📋 Copiar código</button>
+ <p class="mini">Cada jugador abre el enlace en su móvil y toca <b>«Soy yo»</b> en su nombre. Quien no tenga móvil se queda sin asiento y lo controla el anfitrión desde su teléfono.</p></div>
+ ${G.teams.map((t,ti)=>`<div class="card"><b>${esc(t.e+' '+t.name)}</b>${t.m.map((m,mi)=>{
+  const c=claimant(ti,mi),mine=c===ME.id;
+  return `<div class="seat"><span>👤 ${esc(m)}</span>${mine?`<button class="chip on" data-act="seat" data-s="${seatKey(ti,mi)}">✔️ Eres tú (soltar)</button>`:c?`<span class="mini">📱 Ocupado</span>`:`<button class="chip" data-act="seat" data-s="${seatKey(ti,mi)}">🙋 Soy yo</button>`}</div>`}).join('')}</div>`).join('')}
+ <p class="mini" style="text-align:center">Tu estado: ${esc(mySeatsText())}</p>
+ ${ME.host?'<button class="btn" data-act="startonline">🚀 Empezar partida</button>':'<p style="text-align:center">⏳ Esperando a que el anfitrión empiece…</p>'}`;
+}
+function renderGame(){
+ screen='game';app.className='g';
+ app.innerHTML=`${topBar('<span id="seatinfo" class="mini"></span>','🎉 Party')}
+ <div class="top" style="justify-content:flex-end"><span><button class="ib" data-act="dice">🎲</button><button class="ib" data-act="menu">☰</button></span></div>
+ <div id="score"></div>
+ <svg id="bsvg" viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tablero">${boardSVG()}</svg>
+ <div id="dock"></div>`;
+ lastTok=null;sheetKey=null;updateGame();wake();
+}
+function route(){
+ if(!G)return;
+ if(G.ph==='lobby'){renderLobby();return}
+ if(screen!=='game')renderGame();else updateGame();
+}
+
+/* ---- partes del tablero ---- */
+let lastTok=null,rollIv=null,lastEvId=0,sheetKey=null,lastNeed=0;
+function updateGame(){
+ const si=$('#seatinfo');if(si)si.textContent=mySeatsText();
+ paintNet();renderScore();renderTokens();renderDock();renderHL();renderSheet();
+ if(G.ev&&G.ph==='trophy'&&G.ev.id!==lastEvId){lastEvId=G.ev.id;confetti();sfx.win()}
+}
+function renderScore(){
+ const s=$('#score');if(!s)return;
+ s.innerHTML=G.teams.map((t,i)=>`<div class="pc ${i===G.turn&&G.winner==null?'cur':''}"><div class="pn">${esc(t.e+' '+t.name)}</div><div class="tr">${ORDER.map(c=>`<span class="${t.tro.includes(c)?'on':''}">${CATS[c].i}</span>`).join('')}</div><div style="font-size:12px;opacity:.8">🏆 ${t.tro.length}/${G.set.meta}</div></div>`).join('');
+}
+function renderTokens(){
+ const el=$('#tokens');if(!el)return;
+ const sig=G.teams.map(t=>t.node).join(',');
+ if(lastTok!==null&&lastTok!==sig)sfx.tick();lastTok=sig;
+ const by={};G.teams.forEach((t,i)=>(by[t.node]=by[t.node]||[]).push(i));
+ let h='';
+ for(const n in by){const l=by[n],N=NODES[n];l.forEach((ti,k)=>{
+  let ox=0,oy=0,r=12;
+  if(l.length>1){const a=(k/l.length)*2*Math.PI-Math.PI/2;ox=Math.cos(a)*11;oy=Math.sin(a)*11;r=9}
+  const t=G.teams[ti],cur=ti===G.turn&&G.winner==null;
+  h+=`<g transform="translate(${(N.x+ox).toFixed(1)},${(N.y+oy).toFixed(1)})"><g class="${cur?'bob':''}"><circle r="${r}" fill="${t.col}" stroke="${cur?'#ffd23f':'#fff'}" stroke-width="${cur?3:2}"/><text font-size="${r+2}" text-anchor="middle" dominant-baseline="central">${t.e}</text></g></g>`});}
+ el.innerHTML=h;
+}
+function renderHL(){
+ const hl=$('#hl');if(!hl)return;
+ if(G.ph==='move'&&G.mv&&G.mv.opts&&teamMine(G.mv.ti)){
+  hl.innerHTML=G.mv.opts.map(n=>{const N=NODES[n];const isSpur=N.kind==='spur'||N.kind==='trophy';
+   return `<g class="hl" data-hn="${n}"><circle cx="${N.x}" cy="${N.y}" r="29" fill="rgba(255,210,63,.28)" stroke="#ffd23f" stroke-width="3"/>${isSpur?`<text x="${N.x}" y="${N.y-33}" font-size="15" text-anchor="middle">⬆️</text>`:''}</g>`}).join('');
+ }else hl.innerHTML='';
+}
+function dieHTML(v,f=6){
+ if(f===6&&typeof v==='number'){const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[v];return `<div class="die">${[0,1,2,3,4,5,6,7,8].map(i=>`<span class="${P.includes(i)?'on':''}"></span>`).join('')}</div>`}
+ return `<div class="die num">${v}</div>`}
+function renderDock(){
+ const d=$('#dock');if(!d)return;
+ if(G.ph==='win'){const w=G.teams[G.winner];
+  d.innerHTML=`<div class="dk"><div class="dm"><div class="who">🏆 ¡Ganó ${esc(w.e+' '+w.name)}!</div></div><div class="db">${ME.host?'<button class="btn" data-act="rematch">🔁 Revancha</button>':'<button class="btn sec sm" data-act="showwin">Ver resultados</button>'}</div></div>`;return}
+ const t=G.teams[G.turn],roll=G.ph==='rolling';
+ const elig=G.ph==='roll'&&teamMine(G.turn);
+ let msg=G.msg||'';
+ if(G.ph==='move'&&G.mv&&G.mv.opts)msg=teamMine(G.mv.ti)?`Quedan ${G.mv.left} paso${G.mv.left>1?'s':''}. Toca la casilla amarilla por la que seguir 👆`:`${t.name} está eligiendo camino…`;
+ else if(G.ph==='roll'&&!elig)msg=`Esperando a ${t.name}…`;
+ else if(G.ph==='trial'&&G.tr)msg=`${t.name} juega: ${G.tr.label}${G.tr.fin?' (prueba final)':''}`;
+ const face=G.die&&G.die.length?G.die.map(x=>dieHTML(x)).join(''):dieHTML('?');
+ d.innerHTML=`<div class="dk"><div class="dice ${roll?'shake':''}" id="dice">${face}</div><div class="dm"><div class="who">${esc(t.e+' '+t.name)}</div><div class="sub">Le toca a ${esc(t.m[t.perf%t.m.length])}</div><div class="msg">${esc(msg)}</div></div>
+ <div class="db">${elig?`<button class="btn" data-act="roll">🎲 Tirar</button><button class="btn sec sm" data-act="pass">⏭️ Pasar turno</button>`:''}</div></div>`;
+ if(roll){if(!rollIv)rollIv=setInterval(()=>{const el=$('#dice');if(el)el.innerHTML=Array.from({length:G.set.dice2?2:1},()=>dieHTML(1+rnd(6))).join('')},80)}
+ else if(rollIv){clearInterval(rollIv);rollIv=null}
+}
+
+/* ---- hojas dirigidas por el estado (pruebas, trofeo, final) ---- */
+const hdr=(cat,t,fin,label,icon)=>`<div class="sh-h" style="background:${CATS[cat].c}"><span>${icon||CATS[cat].i}</span><span>${esc(t.e+' '+t.name)} · ${label||CATS[cat].n}${fin?' · ⭐ ¡PRUEBA FINAL!':''}</span></div>`;
+function closeSheet(){SHEET.classList.remove('on');SHEET.innerHTML='';sheetKey=null;CV=null}
+function myRole(tr){const t=G.teams[tr.ti];if(mineSeat(tr.ti,tr.perfMi))return 'perf';if(t.m.some((_,i)=>i!==tr.perfMi&&mineSeat(tr.ti,i)))return 'mate';return rivalMe(tr.ti)?'judge':'spec'}
+const CHEAT={p:'🚫 ¡Ha dicho una palabra prohibida!',mime:'🚫 Ha hablado o hecho sonidos',sound:'🚫 Ha dicho la palabra',l:'🚫 Ha usado voz o gestos',d:'🚫 Ha puesto letras, números o hablado'};
+function needPeek(tr){return G.teams[tr.ti].m.some((_,i)=>i!==tr.perfMi&&!claimant(tr.ti,i))}
+const WHY={time:'⏱️ Se acabó el tiempo',tabu:'🚫 Dijo una palabra prohibida',give:'🏳️ Os habéis rendido',cheat:'🚫 El juez vio trampa',wrong:'❌ Respuesta incorrecta',skip:'👑 Prueba anulada por el anfitrión'};
+function sheetFor(){
+ if(G.ph==='trophy'&&G.ev){
+  const t=G.teams[G.ev.ti],c=CATS[G.ev.cat];
+  return{key:'tro'+G.ev.id,after:null,html:`<div class="sh-h" style="background:${c.c}">🏆 ¡Trofeo conseguido!</div><div class="sh-b"><div class="cardx"><div class="e">🏆${c.i}</div><h2>${esc(t.e+' '+t.name)} gana el trofeo de ${c.n}</h2><p>Lleva ${t.tro.length} de ${G.set.meta}.</p></div></div>`};
+ }
+ if(G.ph==='win'&&!winHidden){
+  const rank=G.teams.map((t,i)=>[t,i]).sort((a,b)=>b[0].tro.length-a[0].tro.length);const w=G.teams[G.winner];
+  return{key:'win'+G.winner,html:`<div class="sh-h" style="background:#ca8a04">🏆 ¡Fin de la partida!</div><div class="sh-b"><div class="cardx"><div class="e">${w.e}</div><h2>¡${esc(w.name)} ha ganado!</h2><p>${esc(w.m.join(' y '))}</p></div>${rank.map(([t],k)=>`<div class="set"><span>${k+1}. ${esc(t.e+' '+t.name)}</span><span>🏆 ${t.tro.length}</span></div>`).join('')}${ME.host?'<button class="btn" data-do="rematch">🔁 Revancha</button>':'<p class="mini" style="text-align:center">El anfitrión puede empezar la revancha.</p>'}<button class="btn sec" data-do="hidewin">Ver el tablero</button></div>`,after:()=>{confetti();sfx.win()}};
+ }
+ if(G.ph!=='trial'||!G.tr)return null;
+ const tr=G.tr,t=G.teams[tr.ti],HH=hdr(tr.cat,t,tr.fin,tr.label,tr.icon);
+ const canNext=teamMine(tr.ti);
+ const nextBtn=tr.ok?(tr.fin?'🏆 Reclamar el trofeo':'▶️ Seguir jugando'):'➡️ Pasar turno';
+ const nextHtml=canNext?`<button class="btn ${tr.ok?'ok':'bad'}" data-do="tnext">${nextBtn}</button>`:`<p class="mini" style="text-align:center">⏳ Esperando a que ${esc(t.name)} continúe…</p>`;
+ /* --- preguntas: las lee y juzga el equipo rival --- */
+ if(tr.cat==='q'){
+  const res=tr.step==='result',rd=rivalMe(tr.ti),tm=teamMine(tr.ti)&&!rd;
+  const qbox=`<small>${THQ[tr.q.th]||''}</small><div class="qt">${esc(tr.q.text)}</div><div class="cardx" style="padding:10px"><p class="mini">✅ Respuesta correcta (solo para ti, no la digas):</p><h2>${esc(tr.q.ans)}</h2></div>`;
+  const hskip=ME.host&&!rd&&!res?`<button class="btn sec sm" data-do="hskip">👑 Anfitrión: anular la prueba (fallada)</button>`:'';
+  const timerQ=`<div class="tn" id="tn">${G.set.time}</div><div class="bar"><i id="tb"></i></div>`;
+  if(tr.step==='ready'){
+   return{key:`t${tr.id}|ready|${rd}`,after:null,
+    html:`${HH}<div class="sh-b">${rd?`${qbox}<p class="mini" style="text-align:center">📣 Lee la pregunta en voz alta a ${esc(t.name)}. Al terminar, pulsa el botón: empieza la cuenta atrás de ${G.set.time} s.</p><button class="btn" data-do="qstart">▶️ Pregunta leída: ¡empezar ${G.set.time} s!</button>`:`<div class="cardx"><div class="e">👂</div><h2>Atentos, ${esc(t.name)}</h2><p>Un rival os va a leer la pregunta en voz alta. <b>No miréis su pantalla.</b> Cuando termine empezará la cuenta atrás de ${G.set.time} s.</p></div>${hskip}`}</div>`};
+  }
+  if(tr.step==='play'){
+   return{key:`t${tr.id}|play|${rd}|${tm}`,after:null,
+    html:`${HH}<div class="sh-b">${timerQ}${rd?`${qbox}<button class="btn ok" data-do="qstop">⏹️ Ya responden: parar el tiempo</button>`:`<div class="cardx"><div class="e">🗣️</div><h2>¡Consultadlo entre vosotros!</h2><p>Cuando os pongáis de acuerdo, pulsad el botón: se para el tiempo y diréis <b>una sola respuesta</b> en voz alta.</p></div>${tm?`<button class="btn ok" data-do="qstop">✅ ¡Estamos de acuerdo! Parar el tiempo</button><button class="btn sec sm" data-do="tgive">🏳️ Rendirse</button>`:''}${hskip}`}</div>`};
+  }
+  if(tr.step==='judge'){
+   return{key:`t${tr.id}|judge|${rd}`,after:null,
+    html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">⏸️</div><h2>Tiempo parado</h2></div>${rd?`${qbox}<p style="text-align:center"><b>${esc(t.name)}</b> dice su respuesta en voz alta (solo vale una). ¿Es correcta?</p><button class="btn ok" data-do="qok">✅ Correcta</button><button class="btn bad" data-do="qno">❌ Incorrecta</button>`:`<p style="text-align:center;font-size:18px">🗣️ Decid <b>una sola respuesta</b> en voz alta.<br>Si falláis, se pierde la prueba.</p><p class="mini" style="text-align:center">⏳ Un rival la verifica…</p>${hskip}`}</div>`};
+  }
+  return{key:`t${tr.id}|res|${tr.ok}`,after:()=>{tr.ok?sfx.ok():sfx.bad()},
+   html:`${HH}<div class="sh-b"><small>${THQ[tr.q.th]||''}</small><div class="qt">${esc(tr.q.text)}</div>
+   <div class="cardx"><div class="e">${tr.ok?'🎉':'😬'}</div><h2>${tr.ok?'¡Correcto!':(WHY[tr.why]||'Respuesta incorrecta')}</h2><p style="font-size:22px">Respuesta: <b>${esc(tr.ans||'')}</b></p></div>
+   ${nextHtml}</div>`};
+ }
+ /* --- pruebas de pareja --- */
+ const perfName=t.m[tr.perfMi],mates=t.m.filter((_,i)=>i!==tr.perfMi).join(' y ');
+ const role=myRole(tr),hasW=!!(PRIV&&PRIV.id===tr.id);
+ const rule={mime:'Representa la palabra solo con gestos. Sin hablar ni hacer sonidos.',sound:'Imita el sonido con la voz. No puedes decir la palabra (si es «pato», haz «cuac», pero no digas «pato»).',p:'Describe la palabra sin decirla y sin usar ninguna de las palabras prohibidas.',l:'Di la palabra o frase moviendo solo los labios: SIN voz y sin gestos. Tu pareja te lee los labios.',d:'Dibuja con el dedo. Sin letras, números ni hablar.'}[tr.cat==='m'?tr.mode:tr.cat];
+ let key=`t${tr.id}|${tr.step}|${role}|${role==='perf'||role==='judge'?(hasW?PRIV.word:'-'):''}`;
+ if(tr.step==='result'){
+  return{key,after:()=>{tr.ok?sfx.ok():sfx.bad();vib(tr.ok?60:200)},
+   html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">${tr.ok?'🎉':'😬'}</div><h2>${tr.ok?'¡Prueba superada!':(WHY[tr.why]||'Prueba fallida')}</h2><p style="font-size:22px"><b>${esc(tr.word||'')}</b></p><p>${tr.ok?'Seguís jugando: tirad otra vez.':'Se acabó vuestro turno.'}</p></div>${nextHtml}</div>`};
+ }
+ if(tr.step==='intro'){
+  if(role==='perf')return{key,after:null,html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">${CATS[tr.cat].i}</div><h2>Le toca a ${esc(perfName)}</h2><p>${rule}</p>${needPeek(tr)?`<p><b>${esc(mates)}: no miréis la pantalla.</b></p>`:'<p class="mini">Tu pareja no ve tu pantalla.</p>'}</div><button class="btn" data-do="tword">👀 Ver la palabra</button></div>`};
+  if(role==='judge')return{key,after:()=>{if(lastNeed!==tr.id){lastNeed=tr.id;intent({t:'needword',id:tr.id})}},html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">⚖️</div><h2>Eres el juez de ${esc(t.name)}</h2><p>${esc(perfName)} va a hacer la prueba y ${esc(mates)} adivina. Verás la palabra y vigilarás que no haya trampas.</p><p class="mini">${rule}</p></div></div>`};
+  return{key,after:null,html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">${CATS[tr.cat].i}</div><h2>${esc(perfName)} va a ver la palabra</h2><p>${rule}</p><p><b>${esc(mates)}: ¡atentos y sin mirar la pantalla de ${esc(perfName)}!</b></p></div>${ME.host?'<button class="btn sec" data-do="tword">👑 (Anfitrión) Seguir</button>':''}</div>`};
+ }
+ if(tr.step==='word'){
+  if(role==='perf'){
+   if(!hasW)return{key,after:()=>{if(lastNeed!==tr.id){lastNeed=tr.id;intent({t:'needword',id:tr.id})}},html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">⏳</div><h2>Recibiendo la palabra…</h2></div></div>`};
+   return{key,after:null,html:`${HH}<div class="sh-b"><div class="word">${esc(PRIV.word)}</div>${tr.cat==='p'&&PRIV.forb?`<div class="forb">🚫 ${PRIV.forb.map(esc).join(' · ')}</div>`:''}<p style="text-align:center;opacity:.8">${G.set.time} segundos</p><button class="btn" data-do="tgo">▶️ ¡Empezar!</button>${tr.changed?'':'<button class="btn sec" data-do="tchange">🔄 Cambiar palabra (1 vez)</button>'}</div>`};
+  }
+  if(role==='judge')return{key,after:()=>{if(!hasW&&lastNeed!==tr.id){lastNeed=tr.id;intent({t:'needword',id:tr.id})}},html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">⚖️</div><h2>Eres el juez</h2><p class="mini">La palabra (no la digas):</p></div>${hasW?`<div class="word s">${esc(PRIV.word)}</div>${tr.cat==='p'&&PRIV.forb?`<div class="forb" style="font-size:17px">🚫 ${PRIV.forb.map(esc).join(' · ')}</div>`:''}`:'<div class="word s">⏳</div>'}<p class="mini" style="text-align:center">${esc(perfName)} se prepara…</p></div>`};
+  return{key,after:null,html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">👀</div><h2>${esc(perfName)} está viendo la palabra</h2><p>Preparados…</p></div>${ME.host?'<button class="btn sec" data-do="tgo">👑 (Anfitrión) Empezar</button>':''}</div>`};
+ }
+ if(tr.step==='verify'){
+  const wd=hasW&&role==='judge';
+  return{key,after:null,html:`${HH}<div class="sh-b"><div class="cardx"><div class="e">⏸️</div><h2>Tiempo parado</h2><p>${esc(t.name)} dice que ha acertado.</p></div>${role==='judge'?`${wd?`<div class="word s">${esc(PRIV.word)}</div>`:''}<p style="text-align:center">¿Acertaron y sin trampas?</p><button class="btn ok" data-do="tvok">✅ Sí, prueba superada</button><button class="btn bad" data-do="tvno">🚫 No: hubo trampa</button>`:'<p class="mini" style="text-align:center">⏳ El juez de otro equipo lo está verificando…</p>'}</div>`};
+ }
+ /* step play */
+ const timer=`<div class="tn" id="tn">${G.set.time}</div><div class="bar"><i id="tb"></i></div>`;
+ const hostBar=ME.host&&role!=='perf'?`<p class="mini" style="text-align:center">Controles del anfitrión</p><button class="btn ok sm" data-do="tgood">✅ Dar por adivinado</button><button class="btn sec sm" data-do="tgive">🏳️ Rendirse</button>`:'';
+ if(role==='perf'){
+  const wordBox=!hasW?'<div class="word s">⏳</div>':needPeek(tr)?'<button class="peek" id="peek">👁️ Mantén pulsado para ver la palabra</button>':`<div class="word s">${esc(PRIV.word)}</div>${tr.cat==='p'&&PRIV.forb?`<div class="forb" style="font-size:17px">🚫 ${PRIV.forb.map(esc).join(' · ')}</div>`:''}`;
+  return{key,after:()=>{
+    const pk=$('#peek');
+    if(pk){const show=e=>{e.preventDefault();pk.innerHTML=`<b>${esc(PRIV.word)}</b>${tr.cat==='p'&&PRIV.forb?'<br><small>🚫 '+PRIV.forb.map(esc).join(' · ')+'</small>':''}`};const hide=()=>{pk.textContent='👁️ Mantén pulsado para ver la palabra'};pk.addEventListener('pointerdown',show);['pointerup','pointerleave','pointercancel'].forEach(ev=>pk.addEventListener(ev,hide));pk.addEventListener('contextmenu',e=>e.preventDefault())}
+    if(tr.cat==='d')initPerfCanvas();
+   },
+   html:`${HH}<div class="sh-b">${timer}
+   ${tr.cat==='d'?`<canvas id="cv"></canvas><div class="tools">${['#111111','#e11d48','#2563eb','#16a34a','#f59e0b','#7c3aed'].map((c,i)=>`<button class="sw ${i?'':'on'}" data-c="${c}" style="background:${c}"></button>`).join('')}<button class="sw" data-c="#ffffff" style="background:#fff" title="Goma">🧽</button><button class="chip" id="undo">↩️</button><button class="chip" id="clr">🗑️</button></div>`:''}
+   ${wordBox}
+   <button class="btn ok" data-do="tgood">✅ ¡Adivinado!</button><button class="btn sec" data-do="tgive">🏳️ Rendirse</button></div>`};
+ }
+ if(role==='judge'){
+  return{key,after:()=>{if(tr.cat==='d')initViewCanvas();if(!hasW&&lastNeed!==tr.id){lastNeed=tr.id;intent({t:'needword',id:tr.id})}},
+   html:`${HH}<div class="sh-b">${timer}${tr.cat==='d'?'<canvas id="cv"></canvas>':''}<p class="mini" style="text-align:center">⚖️ Eres el juez: vigila a ${esc(perfName)}</p>${hasW?`<div class="word s">${esc(PRIV.word)}</div>${tr.cat==='p'&&PRIV.forb?`<div class="forb" style="font-size:17px">🚫 ${PRIV.forb.map(esc).join(' · ')}</div>`:''}`:'<div class="word s">⏳</div>'}
+   <button class="btn bad" data-do="ttabu">${CHEAT[tr.cat==='m'?tr.mode:tr.cat]}</button><button class="btn ok sm" data-do="tgood">✅ Dar por adivinado</button></div>`};
+ }
+ if(role==='mate'){
+  return{key,after:()=>{if(tr.cat==='d')initViewCanvas();const gi=$('#gtxt');if(gi){gi.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendGuess()}})}},
+   html:`${HH}<div class="sh-b">${timer}${tr.cat==='d'?'<canvas id="cv"></canvas>':`<div class="cardx"><div class="e">${CATS[tr.cat].i}</div><h2>¡Adivina lo que ${esc(perfName)} te transmite!</h2></div>`}
+   <div class="gin"><input id="gtxt" placeholder="Escribe tu respuesta…" autocomplete="off"><button data-do="guess">Enviar</button></div>
+   <p class="mini" style="text-align:center">También vale decirlo en voz alta: ${esc(perfName)} lo confirma.</p>${hostBar}</div>`};
+ }
+ return{key,after:()=>{if(tr.cat==='d')initViewCanvas()},
+  html:`${HH}<div class="sh-b">${timer}${tr.cat==='d'?'<canvas id="cv"></canvas>':`<div class="cardx"><div class="e">${CATS[tr.cat].i}</div><h2>${esc(t.name)} está jugando</h2><p>${esc(perfName)} → ${esc(mates)}</p></div>`}
+  ${hostBar}</div>`};
+}
+function renderSheet(){
+ const sh=sheetFor();
+ if(!sh){if(sheetKey!==null)closeSheet();return}
+ if(sh.key!==sheetKey){
+  sheetKey=sh.key;CV=null;SHEET.innerHTML=`<div class="sheet">${sh.html}</div>`;SHEET.classList.add('on');
+  if(sh.after)sh.after();
+ }
+}
+function sendQ(){const i=$('#gtxt');if(!i)return;const x=i.value.trim();if(!x)return;i.value='';intent({t:'qans',x})}
+function sendGuess(){const i=$('#gtxt');if(!i)return;const x=i.value.trim();if(!x)return;i.value='';intent({t:'guess',x})}
+SHEET.addEventListener('click',e=>{
+ const b=e.target.closest('[data-do]');if(!b||!G)return;const a=b.dataset.do;
+ if(a==='guess'){sendGuess();return}
+ if(a==='hidewin'){winHidden=true;renderSheet();return}
+ if(a==='qsend'){sendQ();return}
+ if(a==='rematch'){intent({t:'rematch'});return}
+ intent({t:a});
+});
+document.addEventListener('click',e=>{
+ const h=e.target.closest&&e.target.closest('[data-hn]');
+ if(h&&G&&G.ph==='move')intent({t:'choose',n:+h.dataset.hn});
+});
+/* temporizador visual */
+let lastLeft=-1;
+setInterval(()=>{
+ if(!G||!G.tr||G.tr.step!=='play'||!G.tr.endAt){lastLeft=-1;return}
+ const ms=G.tr.endAt-(Date.now()+OFF),left=Math.max(0,Math.ceil(ms/1000));
+ const tn=$('#tn'),tb=$('#tb');if(tn){tn.textContent=left;tn.classList.toggle('low',left<=10)}if(tb){tb.style.width=Math.max(0,Math.min(100,ms/(G.set.time*10)))+'%';tb.classList.toggle('low',left<=10)}
+ if(left!==lastLeft){const first=lastLeft===-1;lastLeft=left;
+  if(first&&left>=G.set.time-2){sfx.go();vib(80)}
+  else if(left===10){sfx.beep();vib(120)}
+  else if(left<=5&&left>0){sfx.beep();vib(40)}
+  else if(left===0){sfx.buzz();vib([400,120,400]);toast('⏱️ ¡Se acabó el tiempo!')}}
+},200);
+
+/* ===================== HOJAS LOCALES (menú, ajustes…) ===================== */
+function modal(html){return new Promise(res=>{MOD.innerHTML=`<div class="sheet">${html}</div>`;MOD.classList.add('on');MOD._res=res})}
+function closeModal(v){const r=MOD._res;MOD._res=null;MOD.classList.remove('on');MOD.innerHTML='';if(r)r(v)}
+MOD.addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)closeModal(b.dataset.v)});
+const confirmBox=async t=>(await modal(`<div class="sh-h" style="background:#475569">❓ Confirmar</div><div class="sh-b"><p style="font-size:18px">${t}</p><button class="btn bad" data-v="y">Sí</button><button class="btn sec" data-v="n">No</button></div>`))==='y';
+async function diceTool(){
+ let n=2,f=6;const pr=modal('');
+ const paint=()=>{
+  MOD.querySelector('.sheet').innerHTML=`<div class="sh-h" style="background:#6d28d9">🎲 Dados libres</div><div class="sh-b"><div class="row"><button class="btn sec sm" id="dm">−</button><b>${n} dado${n>1?'s':''}</b><button class="btn sec sm" id="dp">+</button></div>
+  <div class="row"><button class="chip ${f===6?'on':''}" id="f6">D6</button><button class="chip ${f===20?'on':''}" id="f20">D20</button></div>
+  <div class="dice big" id="dres" style="flex-wrap:wrap">${dieHTML(f===6?6:20,f)}</div><div class="dsum" id="dsum"></div>
+  <button class="btn" id="dgo">🎲 ¡Tirar!</button><button class="btn sec" data-v="x">Cerrar</button></div>`;
+  $('#dm').onclick=()=>{if(n>1){n--;paint()}};$('#dp').onclick=()=>{if(n<8){n++;paint()}};
+  $('#f6').onclick=()=>{f=6;paint()};$('#f20').onclick=()=>{f=20;paint()};
+  $('#dgo').onclick=async()=>{
+   const el=$('#dres');el.classList.add('shake');sfx.roll();vib(40);let v=[];
+   for(let i=0;i<10;i++){v=Array.from({length:n},()=>1+rnd(f));el.innerHTML=v.map(x=>dieHTML(x,f)).join('');await sleep(70)}
+   el.classList.remove('shake');$('#dsum').textContent=n>1?'Suma: '+v.reduce((a,b)=>a+b,0):'';
+  };
+ };
+ paint();await pr;
+}
+function rulesSheet(){
+ return modal(`<div class="sh-h" style="background:#475569">📖 Cómo se juega</div><div class="sh-b">
+ <p><b>Equipos:</b> se juega por parejas. Uno hace la prueba y su pareja adivina; en cada prueba de mímica, prohibidas, labios o dibujo se turnan.</p>
+ <p><b>Objetivo:</b> ser el primer equipo en conseguir los trofeos 🏆 (3, 4 o 5, se elige al empezar).</p>
+ <p><b>Tablero:</b> cinco círculos unidos. En cada cruce hay un «cono» hacia el centro que acaba en un premio dorado 🏆 (uno por prueba). Las casillas 🎲 son tirada libre.</p>
+ <p><b>Turno:</b> tirad el dado y mueve la ficha paso a paso (al empezar, a derecha o izquierda; en cada cruce elegís el camino). Al terminar los pasos jugáis la prueba de la casilla. <b>Acertáis:</b> tiráis otra vez. <b>Falláis:</b> pasa el turno. También se puede pasar con ⏭️.</p>
+ <p><b>Premios:</b> al llegar a un premio que aún no tenéis jugáis la <b>prueba final</b>. Si la superáis ganáis el trofeo y volvéis al cruce.</p>
+ <div class="leg"><span style="background:#2563eb">❓ Preguntas</span><span style="background:#16a34a">🎭 Mímica y sonidos</span><span style="background:#f59e0b">🚫 Prohibidas</span><span style="background:#db2777">👄 Leer labios</span><span style="background:#9333ea">✏️ Dibujo</span></div>
+ <p><b>⚖️ Quién hace qué:</b> el equipo que juega nunca lee la pregunta ni vigila. Los <b>rivales</b> (el otro equipo, o cualquiera de los otros) leen la pregunta o hacen de <b>juez</b>. Con 2 equipos, los dos miembros del equipo que no juega hacen de rivales.</p>
+ <p><b>❓ Preguntas:</b> una sola respuesta, sin opciones. Un rival lee la pregunta en voz alta (él ve la respuesta correcta) y pulsa «Pregunta leída»: empieza la cuenta atrás (se ve en grande, avisa a los 10 s, pita los últimos 5 y suena al acabar). El equipo lo consulta y, cuando está de acuerdo, pulsa «Parar el tiempo» y dice <b>una única respuesta</b> en voz alta. El rival dice si es correcta ✅ o no ❌: si falla, se pierde la prueba. Si se acaba el tiempo o se rinden, también se pierde.</p>
+ <p><b>🎭 Mímica y sonidos:</b> sale al azar una de las dos. <i>Mímica</i>: gestos, sin hablar ni sonidos. <i>Sonidos</i>: imitar con la voz (si es «pato», haz «cuac», pero no digas «pato»). Quien la hace ve la palabra en su móvil y su pareja adivina. Se puede cambiar la palabra una vez. El juez rival también ve la palabra y vigila; si hay trampa pulsa el botón rojo y se pierde.</p>
+ <p><b>🚫 Palabras prohibidas:</b> describir la palabra sin decirla ni usar ninguna de las 5 prohibidas (tampoco derivados). Quien describe ve siempre la palabra y las prohibidas; el juez rival las ve también y pulsa «¡Ha dicho una palabra prohibida!» si se las salta.</p>
+ <p><b>👄 Leer labios:</b> decir la palabra o frase moviendo solo los labios: sin voz y sin gestos. Su pareja la adivina y el juez vigila.</p>
+ <p><b>✏️ Dibujo:</b> dibujar con el dedo, sin letras, números ni hablar. Su pareja lo ve en vivo y el juez también.</p>
+ <p><b>Acertar:</b> cuando la pareja acierta, se pulsa «¡Adivinado!»: el tiempo se para y el juez confirma que fue sin trampas. Si no hay móviles de rivales, el anfitrión hace de juez y no hace falta confirmar.</p>
+ <p><b>Sin repeticiones:</b> el juego recuerda las preguntas y palabras que ya han salido, también entre partidas distintas (en este mismo navegador). Solo se repiten cuando se acaba todo el banco. En Ajustes puedes ver cuántas lleva y olvidarlas.</p>
+ <p><b>Cada uno en su móvil:</b> el anfitrión crea la sala y comparte el enlace. Cada jugador toca «Soy yo» en su nombre. El anfitrión actúa como árbitro y puede manejar a quien no tenga móvil.</p>
+ <button class="btn" data-v="x">Entendido</button></div>`);
+}
+async function settingsSheet(){
+ for(;;){
+  const hostOnly=ME.host;
+  const v=await modal(`<div class="sh-h" style="background:#475569">⚙️ Ajustes</div><div class="sh-b">
+  <div class="set"><span>🔊 Sonido</span><button class="chip ${S.sound?'on':''}" data-v="snd">${S.sound?'Sí':'No'}</button></div>
+  <div class="set"><span>📳 Vibración</span><button class="chip ${S.vib?'on':''}" data-v="vib">${S.vib?'Sí':'No'}</button></div>
+  <div class="set"><span>🎲 Dos dados</span><button class="chip ${G.set.dice2?'on':''}" data-v="d2" ${hostOnly?'':'disabled'}>${G.set.dice2?'Sí':'No'}</button></div>
+  <div class="set"><span>⏱️ Tiempo</span><span>${[30,45,60,90,120].map(t=>`<button class="chip ${G.set.time===t?'on':''}" data-v="t${t}" ${hostOnly?'':'disabled'}>${t}s</button>`).join('')}</span></div>
+  ${hostOnly?`<div class="set"><span>🧠 Preguntas y palabras ya usadas: ${Object.values(H.used).reduce((a,b)=>a+b.length,0)}</span><button class="chip" data-v="clru">Olvidar</button></div>`:'<p class="mini">Tiempo y dados los cambia el anfitrión.</p>'}
+  <button class="btn" data-v="x">Listo</button></div>`);
+  if(v==='snd')S.sound=!S.sound;else if(v==='vib')S.vib=!S.vib;
+  else if(v==='clru'&&hostOnly){H.used={q:[],w:[],s:[],p:[],l:[],r:[]};saveUsed();hostSave();toast('Historial borrado 🧹')}
+  else if(v==='d2'&&hostOnly){G.set.dice2=!G.set.dice2;commit()}
+  else if(v&&v[0]==='t'&&v!=='t'&&hostOnly){G.set.time=+v.slice(1);commit()}
+  else break;
+  saveS();
+ }
+}
+/* ---- JSON ---- */
+function downloadGame(){
+ try{
+  const blob=new Blob([JSON.stringify({G,used:H.used},null,1)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='party-familiar-partida.json';
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('Partida descargada 💾');
+ }catch(e){toast('No se pudo descargar. Usa «Copiar código».')}
+}
+function applyLoaded(x){
+ const g=x&&x.G?x.G:x;
+ if(!validGame(g)){toast('Archivo no válido');return false}
+ leaveNet();
+ g.host=ME.id;g.room=null;g.claims={};normalizeG(g);if(g.ph==='lobby')g.ph='roll';
+ G=g;ME.host=true;mergeUsed(x&&x.used);PRIV=null;
+ sdel('pf3_sess');commit();toast('Partida cargada ✅ (sin sala; puedes abrir una desde ☰)');return true;
+}
+function loadFile(){
+ const inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json';
+ inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{applyLoaded(JSON.parse(rd.result))}catch(e){toast('Archivo no válido')}};rd.readAsText(f)};
+ inp.click();
+}
+async function codeSheet(){
+ const code=btoa(unescape(encodeURIComponent(JSON.stringify({G,used:H.used}))));
+ const v=await modal(`<div class="sh-h" style="background:#475569">📋 Código de partida</div><div class="sh-b"><p>Copia este código y pégalo en «Pegar código» para continuar la partida en otro móvil.</p><textarea id="code" readonly>${code}</textarea><button class="btn" data-v="copy">Copiar</button><button class="btn sec" data-v="x">Cerrar</button></div>`);
+ if(v==='copy')toast((await copyText(code))?'Código copiado ✅':'Selecciona el texto y cópialo a mano');
+}
+async function copyText(t){
+ try{await navigator.clipboard.writeText(t);return true}catch(e){try{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok}catch(_){return false}}
+}
+async function pasteSheet(){
+ const pr=modal(`<div class="sh-h" style="background:#475569">📥 Pegar código</div><div class="sh-b"><p>Pega aquí el código de una partida:</p><textarea id="code"></textarea><button class="btn" id="ldb">Cargar</button><button class="btn sec" data-v="x">Cancelar</button></div>`);
+ let c='';$('#ldb').onclick=()=>{c=$('#code').value.trim();closeModal('load')};
+ const v=await pr;
+ if(v==='load'&&c){try{applyLoaded(JSON.parse(decodeURIComponent(escape(atob(c)))))}catch(e){toast('Código no válido')}}
+}
+async function seatsSheet(){
+ for(;;){
+  const v=await modal(`<div class="sh-h" style="background:#475569">🪑 Mis asientos</div><div class="sh-b"><p class="mini">Toca tu nombre para sentarte. Puedes ocupar más de un asiento (por ejemplo, una pareja con un solo móvil).</p>
+  ${G.teams.map((t,ti)=>`<div class="card"><b>${esc(t.e+' '+t.name)}</b>${t.m.map((m,mi)=>{const c=claimant(ti,mi),mine=c===ME.id;return `<div class="seat"><span>👤 ${esc(m)}</span>${mine?`<button class="chip on" data-v="s:${seatKey(ti,mi)}">✔️ Soltar</button>`:c?'<span class="mini">📱 Ocupado</span>':`<button class="chip" data-v="s:${seatKey(ti,mi)}">🙋 Soy yo</button>`}</div>`}).join('')}</div>`).join('')}
+  <button class="btn" data-v="x">Listo</button></div>`);
+  if(v&&v.startsWith('s:')){const s=v.slice(2);const [ti,mi]=s.split(':').map(Number);intent({t:claimant(ti,mi)===ME.id?'unclaim':'claim',s});await sleep(250)}else break;
+ }
+}
+async function roomSheet(){
+ if(!G.room){
+  if(!(await confirmBox('¿Abrir una sala online para que los demás se unan desde su móvil?')))return;
+  openRoom();return;
+ }
+ const link=location.href.split('#')[0]+'#sala='+G.room;
+ const v=await modal(`<div class="sh-h" style="background:#475569">🌐 Sala online</div><div class="sh-b"><div class="code">${esc(G.room)}</div><p class="mini" style="text-align:center">${NET.up?'🟢 Conectado':'🟠 Conectando…'}</p><textarea readonly style="height:60px">${esc(link)}</textarea><button class="btn" data-v="link">🔗 Copiar enlace</button><button class="btn sec" data-v="seats">🪑 Mis asientos</button>${ME.host?'<button class="btn bad" data-v="close">Cerrar la sala (seguir en un móvil)</button>':''}<button class="btn sec" data-v="x">Cerrar</button></div>`);
+ if(v==='link')toast((await copyText(link))?'Enlace copiado ✅':'Selecciona el texto y cópialo a mano');
+ else if(v==='seats')await seatsSheet();
+ else if(v==='close'){if(await confirmBox('¿Cerrar la sala? Los demás móviles se desconectarán.'))closeRoom()}
+}
+async function menu(){
+ const v=await modal(`<div class="sh-h" style="background:#475569">☰ Menú</div><div class="sh-b">
+ <button class="btn sec" data-v="room">🌐 ${G.room?'Sala online':'Abrir sala online'}</button>
+ ${G.room?'<button class="btn sec" data-v="seats">🪑 Mis asientos</button>':''}
+ ${ME.host?`<button class="btn sec" data-v="dl">⬇️ Descargar partida (JSON)</button>
+ <button class="btn sec" data-v="ld">📂 Cargar partida (JSON)</button>
+ <button class="btn sec" data-v="copy">📋 Copiar código</button>
+ <button class="btn sec" data-v="paste">📥 Pegar código</button>`:'<button class="btn sec" data-v="take">👑 Tomar el control (si el anfitrión se ha caído)</button>'}
+ <button class="btn sec" data-v="set">⚙️ Ajustes</button>
+ <button class="btn sec" data-v="rules">📖 Reglas</button>
+ ${ME.host?`<button class="btn bad" data-v="reset">🔁 Empezar de nuevo (mismos equipos)</button>
+ <button class="btn sec" data-v="new">🆕 Nueva partida</button>`:''}
+ <button class="btn sec" data-v="home">🏠 ${ME.host?'Inicio (la partida queda guardada)':'Salir de la sala'}</button>
+ <button class="btn" data-v="x">Cerrar</button></div>`);
+ if(v==='room')await roomSheet();
+ else if(v==='seats')await seatsSheet();
+ else if(v==='dl')downloadGame();
+ else if(v==='ld')loadFile();
+ else if(v==='copy')await codeSheet();
+ else if(v==='paste')await pasteSheet();
+ else if(v==='take'){if(await confirmBox('¿Tomar el control de la partida? Solo si el anfitrión actual ya no está.'))takeOver()}
+ else if(v==='set')await settingsSheet();
+ else if(v==='rules')await rulesSheet();
+ else if(v==='reset'){if(await confirmBox('¿Empezar de nuevo? Se borran trofeos y posiciones.'))rematch()}
+ else if(v==='new'){if(await confirmBox('¿Empezar una partida nueva? La actual se perderá.')){endHosting();renderSetup()}}
+ else if(v==='home'){if(ME.host){goHome()}else{leaveRoom()}}
+}
+
+/* ===================== SALAS ===================== */
+function leaveNet(){clearTimeout(H.timer);NET.stop()}
+function goHome(){leaveNet();G=null;ME.host=false;PRIV=null;renderHome()}
+function endHosting(){
+ if(G&&G.room)NET.pub('s','',true);
+ leaveNet();{const old=sget('pf3_host');if(old)sset('pf3_prev',old)}sdel('pf3_host');sdel('pf3_sess');G=null;ME.host=false;PRIV=null;
+}
+function leaveRoom(){leaveNet();sdel('pf3_sess');G=null;ME.host=false;PRIV=null;renderHome()}
+function openRoom(){
+ G.room=genRoom();G.claims={};ME.host=true;
+ sset('pf3_sess',JSON.stringify({room:G.room,host:true}));
+ NET.start(G.room);commit();toast('Sala '+G.room+' abierta');setTimeout(()=>roomSheet(),400);
+}
+function closeRoom(){
+ if(G.room)NET.pub('s','',true);
+ leaveNet();G.room=null;G.claims={};sdel('pf3_sess');commit();
+}
+function takeOver(){
+ if(!G)return;ME.host=true;G.host=ME.id;
+ normalizeG(G);G.rev=(G.rev||0)+10;
+ sset('pf3_sess',JSON.stringify({room:G.room,host:true}));commit();toast('Ahora eres el anfitrión 👑');
+}
+let joinTimer=null;
+function joinRoom(code){
+ code=(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+ if(code.length!==6){renderJoin(code,'El código tiene 6 letras o números.');return}
+ leaveNet();G=null;ME.host=false;PRIV=null;
+ screen='join';app.className='';closeSheet();
+ app.innerHTML=`<div class="top"><button class="ib" data-act="home">←</button><b>Conectando…</b><span></span></div><div class="card" style="text-align:center"><div class="logo">📡</div><p>Entrando en la sala <b>${esc(code)}</b>…</p></div>`;
+ NET.start(code);
+ clearTimeout(joinTimer);
+ joinTimer=setTimeout(()=>{if(!G){leaveNet();renderJoin(code,'No encuentro esa sala. Comprueba el código y que el anfitrión la tenga abierta. Si el problema continúa, puede que el servidor público esté caído: prueba en unos minutos.')}},9000);
+}
+function startHostSession(){
+ // crea sala o partida local según el modo elegido
+ saveS();ac();
+ leaveNet();{const old=sget('pf3_host');if(old)sset('pf3_prev',old)}sdel('pf3_host');sdel('pf3_sess');PRIV=null;ME.host=true;
+ if(S.mode==='online'){
+  const room=genRoom();G=newGameState(room);G.msg='';
+  sset('pf3_sess',JSON.stringify({room,host:true}));NET.start(room);
+ }else{G=newGameState(null);G.msg='¡Empieza '+G.teams[0].name+'!'}
+ commit();
+}
+function resumeHost(){
+ const x=loadHostSave();if(!x)return;
+ leaveNet();ME.host=true;G=normalizeG(x.G);G.host=ME.id;mergeUsed(x.used);PRIV=null;
+ if(G.room)NET.start(G.room);
+ commit();
+}
+
+/* ===================== EVENTOS ===================== */
+const ACT={
+ continue(){resumeHost()},
+ rejoin(){let s=null;try{s=JSON.parse(sget('pf3_sess')||'null')}catch(e){}if(s&&s.room)joinRoom(s.room)},
+ new(){renderSetup()},dice(){diceTool()},rules(){rulesSheet()},loadfile(){loadFile()},
+ home(){leaveNet();clearTimeout(joinTimer);G=null;ME.host=false;renderHome()},
+ joinscr(){renderJoin('')},
+ join(){joinRoom(($('#jcode')||{}).value)},
+ leave(){if(ME.host){goHome()}else leaveRoom()},
+ mode(b){S.mode=b.dataset.n;saveS();renderSetup()},
+ emoji(b){const i=+b.dataset.i;const used=S.teams.map(p=>p.e);let k=EMOJIS.indexOf(S.teams[i].e);for(let t=0;t<EMOJIS.length;t++){k=(k+1)%EMOJIS.length;if(!used.includes(EMOJIS[k]))break}S.teams[i].e=EMOJIS[k];saveS();renderSetup()},
+ del(b){if(S.teams.length>2){S.teams.splice(+b.dataset.i,1);saveS();renderSetup()}else toast('Mínimo 2 equipos')},
+ add(){if(S.teams.length>=6)return toast('Máximo 6 equipos');const n=S.teams.length,used=S.teams.map(p=>p.e);S.teams.push({name:'Equipo '+(n+1),e:EMOJIS.find(e=>!used.includes(e)),m:['Jugador '+(2*n+1),'Jugador '+(2*n+2)]});saveS();renderSetup()},
+ third(b){const t=S.teams[+b.dataset.i];if(t.m.length>2)t.m.pop();else t.m.push('Jugador extra');saveS();renderSetup()},
+ shuf(){S.teams=shuffle(S.teams);saveS();renderSetup()},
+ meta(b){S.meta=+b.dataset.n;saveS();renderSetup()},
+ time(b){S.time=+b.dataset.n;saveS();renderSetup()},
+ d2(b){S.dice2=b.dataset.n==='1';saveS();renderSetup()},
+ tq(b){const k=b.dataset.k;S.tq=S.tq.includes(k)?S.tq.filter(x=>x!==k):S.tq.concat(k);saveS();renderSetup()},
+ tw(b){const k=b.dataset.k;S.tw=S.tw.includes(k)?S.tw.filter(x=>x!==k):S.tw.concat(k);saveS();renderSetup()},
+ start:async()=>{if(loadHostSave()&&!(await confirmBox('Hay una partida guardada en este móvil. Si empiezas una nueva, quedará como «partida anterior» (puedes recuperarla desde el inicio). ¿Empezar una nueva?')))return;startHostSession()},
+ restoreprev(){const v=sget('pf3_prev');if(v){sset('pf3_host',v);sdel('pf3_prev');toast('Partida recuperada ✅');renderHome()}},
+ startonline(){if(!ME.host||!G)return;ac();G.ph='roll';G.msg='¡Empieza '+G.teams[0].name+'!';commit()},
+ seat(b){const s=b.dataset.s;const [ti,mi]=s.split(':').map(Number);intent({t:claimant(ti,mi)===ME.id?'unclaim':'claim',s})},
+ async copylink(){const l=location.href.split('#')[0]+'#sala='+G.room;toast((await copyText(l))?'Enlace copiado ✅':'No se pudo copiar')},
+ async copycode(){toast((await copyText(G.room))?'Código copiado ✅':'No se pudo copiar')},
+ roll(){ac();intent({t:'roll'})},
+ async pass(){if(!G||G.ph!=='roll')return;if(await confirmBox('¿Pasar el turno al siguiente equipo?'))intent({t:'pass'})},
+ menu(){menu()},rematch(){intent({t:'rematch'})},
+ showwin(){winHidden=false;renderSheet()}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||MOD.classList.contains('on'))return;const f=ACT[b.dataset.act];if(f)f(b,e)});
+document.addEventListener('input',e=>{const d=e.target.dataset;if(!d||d.ti===undefined)return;const t=S.teams[+d.ti];if(!t)return;if(d.mi!==undefined)t.m[+d.mi]=e.target.value;else t.name=e.target.value;saveS()});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target&&e.target.id==='jcode')joinRoom(e.target.value)});
+
+/* ===================== ARRANQUE ===================== */
+(function init(){
+ let h='';try{h=location.hash||''}catch(e){}
+ const m=/sala=([A-Za-z0-9]{6})/.exec(h);
+ if(m){
+  const code=m[1].toUpperCase();const hs=loadHostSave();
+  if(hs&&hs.G.room===code){resumeHost();return}
+  joinRoom(code);return;
+ }
+ renderHome();
+})();
+</script>
+</body>
+</html>
